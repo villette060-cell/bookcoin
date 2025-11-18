@@ -109,11 +109,30 @@ var a=[107,121,110,121,125,120,41,44,44,126,115,115,119,127,115,117,114], // 加
     latestResult=[];
 const STORAGE_KEY = p;
 const CACHE_KEY = z;
+function showPopup(msg, duration = 2000) {
+  const popup = document.createElement("div");
+  popup.innerText = msg;
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%,-50%)";
+  popup.style.background = "rgba(0,0,0,0.8)";
+  popup.style.color = "#fff";
+  popup.style.padding = "12px 20px";
+  popup.style.borderRadius = "6px";
+  popup.style.fontSize = "14px";
+  popup.style.zIndex = "10000";
+  popup.style.textAlign = "center";
+  document.body.appendChild(popup);
+  setTimeout(() => {
+    document.body.removeChild(popup)
+  }, duration);
+}
 function checkPwd(){
   const val = document.getElementById("pwdInput").value.trim();
   let PASSWORD = '';
   for(let i=0; i<a.length; i++){
-    PASSWORD += String.fromCharCode(a[i] ^ 28); // 密钥28
+    PASSWORD += String.fromCharCode(a[i] ^ 28); 
   }
   if(val === PASSWORD){
     localStorage.setItem(STORAGE_KEY,"true");
@@ -139,14 +158,14 @@ const placeholderText=document.getElementById('placeholderText');
 inputData.addEventListener('focus',()=>{placeholderText.style.display='none'});inputData.addEventListener('blur',()=>{if(inputData.innerText.trim()==='')placeholderText.style.display='block'});inputData.addEventListener('input',()=>{if(inputData.innerText.trim()==='')placeholderText.style.display='block';else placeholderText.style.display='none';try{localStorage.setItem(CACHE_KEY,inputData.innerHTML)}catch(e){console.warn('缓存保存失败',e)}});
 function formatUpdateTime(submitStr){if(!submitStr)return'';const submitDate=new Date(String(submitStr).replace(/-/g,'/'));if(isNaN(submitDate))return submitStr;const submitDay=new Date(submitDate.getFullYear(),submitDate.getMonth(),submitDate.getDate());const now=new Date();const nowDay=new Date(now.getFullYear(),now.getMonth(),now.getDate());const diff=Math.floor((nowDay-submitDay)/(1000*60*60*24));if(diff===0)return'今日内';return diff+'天前'}
 function parseTimeToTs(str){if(!str)return null;const s=String(str).replace(/\./g,'/').replace(/年|月/g,'/').replace(/日/g,'').trim();const d=new Date(s);if(!isNaN(d))return d.getTime();return null}
-function loadCacheTable(){const container=document.getElementById("inputData");const cache=localStorage.getItem(CACHE_KEY);if(cache){container.innerHTML=cache;placeholderText.style.display='none'}else{alert("无缓存表格可用，请手动粘贴表格内容")}}
+function loadCacheTable(){const container=document.getElementById("inputData");const cache=localStorage.getItem(CACHE_KEY);if(cache){container.innerHTML=cache;placeholderText.style.display='none'}else{showPopup("无缓存表格可用，请手动粘贴表格内容")}}
 function clearInputData(){const container=document.getElementById("inputData");container.innerHTML="";placeholderText.style.display='block';document.getElementById("statusMsg").innerText=""}
-function classify(item){if(item.是否过期)return'过期组';if(item.是否暂停||item.信用分逻辑<6)return'弃置组';if(item.信用分逻辑>=8){if(item.是否攒)return'攒币组';if(item.是否不接急单)return'低速组';return'正常组'}if(item.信用分逻辑>=6)return'低分组';return'弃置组'}
+function classify(item) {if (item.是否暂停) return '弃置组';if (item.是否过期) return '过期组';if (item.信用分逻辑 < 6) return '弃置组';if (item.信用分逻辑 < 8) return '低分组';if (item.信用分逻辑 >= 8) {if (item.是否攒) return '攒币组';if (item.是否不接急单) return '低速组';return '正常组';}}
 function search(){
   const container=document.getElementById("inputData");
   const inputVal=parseFloat(document.getElementById("numInput").value);
-  if(!container.querySelector('table')){alert("请先加载缓存表格或手动粘贴数据");document.getElementById("result").innerHTML="";return}
-  if(isNaN(inputVal)){alert("请输入有效数字");return}
+  if(!container.querySelector('table')){showPopup("请先加载缓存表格或手动粘贴数据");document.getElementById("result").innerHTML="";return}
+  if(isNaN(inputVal)){showPopup("请输入有效数字");return}
   window.deletedIds=new Set();
   window.deletedStack=[];
   window.supplementStack=[];
@@ -186,7 +205,7 @@ function search(){
   rows.forEach(row=>{parseAccounts(row).forEach(item=>{const g=classify(item);switch(g){case'过期组':expiredGroup.push(item);break;case'正常组':normalGroup.push(item);break;case'低速组':slowGroup.push(item);break;case'攒币组':zhanGroup.push(item);break;case'低分组':lowGroup.push(item);break;case'弃置组':discardGroup.push(item);break}})});
   window.normalGroup=normalGroup;window.slowGroup=slowGroup;window.zhanGroup=zhanGroup;window.lowGroup=lowGroup;
   window.upperPool=[];window.lowerPool=[];window.expiredPool=[];window.latestResult=[];window.origPositionMap=new Map();window.overlayButtons=[];
-  window.expiredPool=expiredGroup.filter(r=>r.数值>=num-10&&r.数值<num);
+  window.expiredPool=expiredGroup.filter(r=>r.数值>=num-10);
   const upperCandidates=[...normalGroup,...slowGroup,...zhanGroup,...lowGroup].filter(r=>!r.是否过期&&r.数值>=num-10&&r.数值<num);
   const upperGroupOrder=['低分组','攒币组','低速组','正常组'];
   upperCandidates.sort((a,b)=>{const ga=upperGroupOrder.indexOf(classify(a)),gb=upperGroupOrder.indexOf(classify(b));if(ga!==gb)return ga-gb;if(a.数值!==b.数值)return a.数值-b.数值;if(a.信用分!==b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0)});
@@ -369,7 +388,7 @@ function renderCalcSection(num){
 }
 async function generateResultImage(){
   const captureArea=document.getElementById("captureArea");
-  if(!captureArea){alert("无查询结果可截图");return}
+  if(!captureArea){showPopup("无查询结果可截图");return}
   const wrapper=document.createElement('div');
   wrapper.style.width='600px';wrapper.style.padding='12px';wrapper.style.background='#fff';wrapper.style.position='absolute';wrapper.style.left='-9999px';wrapper.style.boxSizing='border-box';wrapper.style.fontFamily='Arial, sans-serif';wrapper.style.fontSize='14px';
   const clone=captureArea.cloneNode(true);clone.style.width='100%';wrapper.appendChild(clone);document.body.appendChild(wrapper);
@@ -392,16 +411,9 @@ async function copyGeneratedImg(){
   clone.style.width='100%';wrapper.appendChild(clone);document.body.appendChild(wrapper);
   const canvas=await html2canvas(wrapper,{backgroundColor:null,scale:2});
   const blob=await new Promise(resolve=>canvas.toBlob(resolve));document.body.removeChild(wrapper);
-  try{
-    await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
-    const tipPopup=document.createElement("div");
-    tipPopup.innerText="✅ 已复制图片，可直接粘贴到微信";
-    tipPopup.style.position="fixed";tipPopup.style.top="50%";tipPopup.style.left="50%";tipPopup.style.transform="translate(-50%,-50%)";tipPopup.style.background="rgba(0,0,0,0.8)";tipPopup.style.color="#fff";tipPopup.style.padding="12px 20px";tipPopup.style.borderRadius="6px";tipPopup.style.fontSize="14px";tipPopup.style.zIndex="10000";tipPopup.style.textAlign="center";
-    document.body.appendChild(tipPopup);
-    setTimeout(()=>{document.body.removeChild(tipPopup)},2000);
-  }catch(err){alert("❌ 复制失败，请手动复制图片");console.error(err)}
-}
-function saveGeneratedImg(){const img=document.getElementById("generatedImg");if(!img.src)return alert("无图片可保存");const link=document.createElement("a");link.href=img.src;link.download="查询结果.png";link.click()}
+  try{await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);showPopup("✅ 已复制图片，可直接粘贴到微信");  
+  }catch(err){showPopup("❌ 复制失败，请手动复制图片");console.error(err);}}
+function saveGeneratedImg(){const img=document.getElementById("generatedImg");if(!img.src)return showPopup("无图片可保存");const link=document.createElement("a");link.href=img.src;link.download="查询结果.png";link.click()}
 document.getElementById("generateImgBtn")?.addEventListener("click",generateResultImage);
 document.getElementById("copyImgBtn")?.addEventListener("click",copyGeneratedImg);
 document.getElementById("saveImgBtn")?.addEventListener("click",saveGeneratedImg);
