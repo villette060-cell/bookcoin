@@ -198,7 +198,7 @@ function search(){
     const submit=(cells[submitColIdx]&&cells[submitColIdx].innerText)?cells[submitColIdx].innerText.trim():'';
     const updateStr=submit;
     const list=[];
-    accounts.forEach((text,k)=>{if(!text)return;const valMatch=text.replace(/,/g,'').match(/\d+(\.\d+)?/);const val=valMatch?parseFloat(valMatch[0]):null; if(val!==null){const updateTs=parseTimeToTs(updateStr)||parseTimeToTs(submit)||null;list.push({群昵称:name,账号:`账号${k+1}`,书币:text,提交时间:formatUpdateTime(submit),更新时间:formatUpdateTime(updateStr),更新时间_ts:updateTs,是否过期:/过期|到期/.test(text),是否攒:/攒/.test(text),是否暂停:/暂停接单/.test(text),是否不接急单:/不接急单/.test(text),数值:val,信用分:rawCredit===""?0:(parseFloat(rawCredit)||0),信用分逻辑:creditForLogic,原始时间:submit,提交时间原始:submit})}});
+    accounts.forEach((text,k)=>{if(!text)return;const valMatch=text.replace(/,/g,'').match(/\d+(\.\d+)?/);const val=valMatch?parseFloat(valMatch[0]):null; if(val!==null){const updateTs=parseTimeToTs(updateStr)||parseTimeToTs(submit)||null;list.push({群昵称:name,账号:`账号${k+1}`,书币:text,提交时间:formatUpdateTime(submit),更新时间:formatUpdateTime(updateStr),更新时间_ts:updateTs,是否过期:/过期|到期/.test(text),是否攒:/攒/.test(text),是否暂停:/暂停接单/.test(text),是否不接急单:/不接急单/.test(text),数值:val,信用分:rawCredit===""?10:(parseFloat(rawCredit)||10),信用分逻辑:creditForLogic,原始时间:submit,提交时间原始:submit})}});
     return list;
   }
   let expiredGroup=[],normalGroup=[],slowGroup=[],zhanGroup=[],lowGroup=[],discardGroup=[];
@@ -420,3 +420,4 @@ document.getElementById("saveImgBtn")?.addEventListener("click",saveGeneratedImg
 </script>
 </body>
 </html>
+
