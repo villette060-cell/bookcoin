@@ -205,7 +205,7 @@ function search(){
   rows.forEach(row=>{parseAccounts(row).forEach(item=>{const g=classify(item);switch(g){case'过期组':expiredGroup.push(item);break;case'正常组':normalGroup.push(item);break;case'低速组':slowGroup.push(item);break;case'攒币组':zhanGroup.push(item);break;case'低分组':lowGroup.push(item);break;case'弃置组':discardGroup.push(item);break}})});
   window.normalGroup=normalGroup;window.slowGroup=slowGroup;window.zhanGroup=zhanGroup;window.lowGroup=lowGroup;
   window.upperPool=[];window.lowerPool=[];window.expiredPool=[];window.latestResult=[];window.origPositionMap=new Map();window.overlayButtons=[];
-  window.expiredPool=expiredGroup.filter(r=>r.数值>=num-10);
+    window.expiredPool=expiredGroup.filter(r=>r.数值>=num-10).sort((a,b)=>{if(a.数值!== b.数值)return a.数值-b.数值;if(a.信用分!== b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0);});
   const upperCandidates=[...normalGroup,...slowGroup,...zhanGroup,...lowGroup].filter(r=>!r.是否过期&&r.数值>=num-10&&r.数值<num);
   const upperGroupOrder=['低分组','攒币组','低速组','正常组'];
   upperCandidates.sort((a,b)=>{const ga=upperGroupOrder.indexOf(classify(a)),gb=upperGroupOrder.indexOf(classify(b));if(ga!==gb)return ga-gb;if(a.数值!==b.数值)return a.数值-b.数值;if(a.信用分!==b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0)});
@@ -420,4 +420,5 @@ document.getElementById("saveImgBtn")?.addEventListener("click",saveGeneratedImg
 </script>
 </body>
 </html>
+
 
