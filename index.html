@@ -1,156 +1,155 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>书币查询工具v2.4</title>
-  <style>
-    #passwordArea{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
-    #pwdInput{width:240px;height:34px;padding:0 8px;font-size:18px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;text-align:left;}
-    #pwdConfirm{margin-top:10px;padding:6px 14px;border:none;border-radius:6px;background-color:#0078d7;color:white;cursor:pointer;height:34px;font-size:14px;}
-    #pwdConfirm:hover{background-color:#005ea6;}
-    body{font-family:"Microsoft YaHei",sans-serif;margin:20px;background:#fafafa;}
-    #main{display:none;text-align:center;}
-    #inputWrapper{position:relative;width:100%;max-width:100%;height:250px;margin-bottom:10px;}
-    #placeholderText{position:absolute;top:8px;left:8px;color:#999;pointer-events:none;}
-    #inputData{width:100%;height:100%;overflow-y:auto;border:1px solid #ccc;border-radius:6px;padding:8px;box-sizing:border-box;font-size:14px;line-height:1.6;white-space:pre-wrap;text-align:left;}
-    button{padding:6px 14px;margin:8px 4px;border:none;border-radius:6px;background-color:#0078d7;color:white;cursor:pointer;display:inline-flex;align-items:center;height:34px;white-space:nowrap;transition:background-color .12s;}
-    button:hover{background-color:#005ea6;}
-    button.loading{background-color:#999;cursor:not-allowed;}
-    table{border-collapse:collapse;width:100%;margin-top:10px;background:white;}
-    th,td{border:1px solid #ccc;padding:6px;text-align:left;font-size:14px;vertical-align:middle;}
-    th{background-color:#f0f0f0;}
-    #result{margin-top:20px;overflow:auto;position:relative;background:transparent;}
-    pre{width:100%;background:#f9f9f9;border:1px solid #ccc;border-radius:6px;padding:8px;white-space:pre-wrap;}
-    #numInput{font-weight:600;width:100px;height:34px;text-align:center;padding:0 8px;border:1px solid #ccc;border-radius:6px;vertical-align:middle;font-size:18px;-moz-appearance:textfield;}
-    #numInput::-webkit-outer-spin-button,#numInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
-    #numInput::placeholder{text-align:center;font-weight:normal;font-size:14px;}
-    #actionButtons{display:flex;justify-content:center;flex-wrap:wrap;margin-top:10px;}
-    #actionButtons button{flex:0 0 auto;}
-    .queryValue{font-weight:bold;margin-bottom:6px;text-align:center;}
-    .statusText{font-size:14px;color:#666;margin-top:5px;}
-    .trashSvg{width:18px;height:18px;cursor:pointer;display:inline-block;vertical-align:middle;}
-    .trashCell{text-align:center;}
-    @media (max-width:420px){button{padding:6px 10px;font-size:13px}.trashSvg{width:16px;height:16px}}
-    .deleted-mark{opacity:.45;text-decoration:line-through;}
-    .highlight-row{background:yellow!important;}
-    #dealAndTransfer{display:flex;flex-wrap:wrap;font-size:16px;align-items:center;column-gap:10px;font-weight:600;}
-    #dealAndTransfer .item{flex:1 1 auto;min-width:120px;}
-    @media (max-width:768px){#dealAndTransfer{justify-content:center}#dealAndTransfer .item:nth-child(1),#dealAndTransfer .item:nth-child(2){flex:1 1 45%;text-align:center;margin-bottom:0}#dealAndTransfer .item:nth-child(3),#dealAndTransfer .item:nth-child(4){flex:1 1 45%;text-align:center;margin-top:0}}
-    #result table tr{height:30px;}
-    #result table td{height:30px;line-height:20px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 4px;vertical-align:middle;}
-    @media screen and (max-width:768px){#result table tr{height:50px}#result table td{height:50px;padding:0 4px;vertical-align:middle}#result table td .multi-line{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;line-height:20px;height:60px;white-space:normal;text-overflow:ellipsis;display:-webkit-box;justify-content:center}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>书币查询工具v2.5</title>
+<style>
+#passwordArea{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+#pwdInput{width:240px;height:34px;padding:0 8px;font-size:18px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;text-align:left;}
+#pwdConfirm{margin-top:10px;padding:6px 14px;border:none;border-radius:6px;background-color:#0078d7;color:white;cursor:pointer;height:34px;font-size:14px;}
+#pwdConfirm:hover{background-color:#005ea6;}
+body{font-family:"Microsoft YaHei",sans-serif;margin:20px;background:#fafafa;}
+#main{display:none;text-align:center;}
+#inputWrapper{position:relative;width:100%;max-width:100%;height:250px;margin-bottom:10px;}
+#placeholderText{position:absolute;top:8px;left:8px;color:#999;pointer-events:none;}
+#inputData{width:100%;height:100%;overflow-y:auto;border:1px solid #ccc;border-radius:6px;padding:8px;box-sizing:border-box;font-size:14px;line-height:1.6;white-space:pre-wrap;text-align:left;}
+button{padding:6px 14px;margin:8px 4px;border:none;border-radius:6px;background-color:#0078d7;color:white;cursor:pointer;display:inline-flex;align-items:center;height:34px;white-space:nowrap;transition:background-color .12s;}
+button:hover{background-color:#005ea6;}
+button.loading{background-color:#999;cursor:not-allowed;}
+table{border-collapse:collapse;width:100%;margin-top:10px;background:white;}
+th,td{border:1px solid #ccc;padding:6px;text-align:left;font-size:14px;vertical-align:middle;}
+th{background-color:#f0f0f0;}
+#result{margin-top:20px;overflow:auto;position:relative;background:transparent;}
+pre{width:100%;background:#f9f9f9;border:1px solid #ccc;border-radius:6px;padding:8px;white-space:pre-wrap;}
+#numInput{font-weight:600;width:100px;height:34px;text-align:center;padding:0 8px;border:1px solid #ccc;border-radius:6px;vertical-align:middle;font-size:18px;-moz-appearance:textfield;}
+#numInput::-webkit-outer-spin-button,#numInput::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+#numInput::placeholder{text-align:center;font-weight:normal;font-size:14px;}
+#actionButtons{display:flex;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+#actionButtons button{flex:0 0 auto;}
+.queryValue{font-weight:bold;margin-bottom:6px;text-align:center;}
+.statusText{font-size:14px;color:#666;margin-top:5px;}
+.trashSvg{width:18px;height:18px;cursor:pointer;display:inline-block;vertical-align:middle;}
+.trashCell{text-align:center;}
+@media (max-width:420px){button{padding:6px 10px;font-size:13px}.trashSvg{width:16px;height:16px}}
+.deleted-mark{opacity:.45;text-decoration:line-through;}
+.highlight-row{background:yellow!important;}
+#dealAndTransfer{display:flex;flex-wrap:wrap;font-size:16px;align-items:center;column-gap:10px;font-weight:600;}
+#dealAndTransfer .item{flex:1 1 auto;min-width:120px;}
+@media (max-width:768px){#dealAndTransfer{justify-content:center}#dealAndTransfer .item:nth-child(1),#dealAndTransfer .item:nth-child(2){flex:1 1 45%;text-align:center;margin-bottom:0}#dealAndTransfer .item:nth-child(3),#dealAndTransfer .item:nth-child(4){flex:1 1 45%;text-align:center;margin-top:0}}
+#result table tr{height:30px;}
+#result table td{height:30px;line-height:20px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 4px;vertical-align:middle;}
+@media screen and (max-width:768px){#result table tr{height:50px}#result table td{height:50px;padding:0 4px;vertical-align:middle}#result table td .multi-line{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;line-height:20px;height:60px;white-space:normal;text-overflow:ellipsis;display:-webkit-box;justify-content:center}}
+</style>
 </head>
 <body>
 <div id="passwordArea">
-  <h2>请输入密码</h2>
-  <div id="pwdInputWrapper">
-    <input type="password" id="pwdInput" placeholder="请输入密码">
-  </div>
-  <br>
-  <button id="pwdConfirm" onclick="checkPwd()">确定</button>
-  <p id="pwdMsg" style="color:red;"></p>
+<h2>请输入密码</h2>
+<div id="pwdInputWrapper">
+<input type="password" id="pwdInput" placeholder="请输入密码">
+</div>
+<br>
+<button id="pwdConfirm" onclick="checkPwd()">确定</button>
+<p id="pwdMsg" style="color:red;"></p>
 </div>
 <div id="main">
-  <h2>📖 书币查询工具</h2>
-  <div style="text-align:center;margin-bottom:10px;">
-    <button id="refreshBtn" onclick="loadCacheTable()">📥 加载缓存表格</button>
-    <button id="loadCacheBtn" onclick="clearInputData()">🧹 清空表格内容</button>
-    <div id="status" class="statusText">
-      <span id="statusText">点击上方按钮加载缓存表格或手动粘贴<a href="https://docs.qq.com/sheet/DUHFGbE54d0JDcWFT?tab=1i6wf3" target="_blank">余额汇总表</a>粘贴至下方（注意不要粘贴为纯文本）</span>
-      <span id="statusMsg" style="margin-left:8px;color:red"></span>
-    </div>
-  </div>
-  <div id="inputWrapper">
-    <div id="placeholderText">自动获取或手动粘贴表格内容</div>
-    <div id="inputData" contenteditable="true"></div>
-  </div>
-  <div style="margin:10px 0;text-align:center;">
-    <input type="number" id="numInput" placeholder="输入所需书币">
-    <button onclick="search()">🔍 查询</button>
-    <button id="undoBtn" onclick="undoDelete()">↶ 撤销删除</button>
-  </div>
-  <div id="captureArea">
-    <div id="calcSection" style="display:none;flex-direction:column;align-items:center;margin-bottom:12px;font-size:16px;line-height:1.4;gap:4px;">
-      <div id="needCoin" style="display:none;font-size:18px;font-weight:600;margin-bottom:0;"> 所需书币：<span id="inputCoin" style="display:inline-block;min-width:40px">0</span></div>
-      <div id="result" style="margin:0;padding:0;"></div>
-      <div id="dealAndTransfer" style="display:flex;font-size:16px;align-items:center;gap:20px;font-weight:600;">
-        <div>成交价：<span id="dealPrice">0.00</span></div>
-        <div>到手价：<span id="afterDealPrice">0.00</span></div>
-        <div>本单赚取：<span id="profitPrice">0.00</span></div>
-        <div>需转账：<span id="transferResult">0.00</span></div>
-      </div>
-      <div id="feeOptions" style="display:flex;font-size:14px;justify-content:center;gap:25px;font-weight:normal;">
-        <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="platformFee"> 6‰交易平台服务费</label>
-        <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="personalFee"> 10%个人手续费</label>
-      </div>
-    </div>
-  </div>
-  <button id="generateImgBtn" style="display:none;">生成查询结果图</button>
-  <div id="imgPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:1000;flex-direction:column;">
-    <div style="background:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;align-items:center;max-width:90%;">
-      <img id="generatedImg" src="" alt="查询结果" style="width:600px;height:auto;margin-bottom:12px;border:1px solid #ccc;">
-      <div id="imgTip" style="margin-bottom:12px;font-size:14px;color:#555;text-align:center;">复制图片 / 保存图片</div>
-      <div style="display:flex;gap:12px;">
-        <button id="copyImgBtn" class="imgBtn">复制图片</button>
-        <button id="saveImgBtn" class="imgBtn">保存图片</button>
-      </div>
-    </div>
-  </div>
+<h2>📖 书币查询工具</h2>
+<div style="text-align:center;margin-bottom:10px;">
+<button id="refreshBtn" onclick="loadCacheTable()">📥 加载缓存表格</button>
+<button id="loadCacheBtn" onclick="clearInputData()">🧹 清空表格内容</button>
+<div id="status" class="statusText">
+<span id="statusText">点击上方按钮加载缓存表格或手动粘贴<a href="https://docs.qq.com/sheet/DUHFGbE54d0JDcWFT?tab=1i6wf3" target="_blank">余额汇总表</a>粘贴至下方（注意不要粘贴为纯文本）</span>
+<span id="statusMsg" style="margin-left:8px;color:red"></span>
+</div>
+</div>
+<div id="inputWrapper">
+<div id="placeholderText">自动获取或手动粘贴表格内容</div>
+<div id="inputData" contenteditable="true"></div>
+</div>
+<div style="margin:10px 0;text-align:center;">
+<input type="number" id="numInput" placeholder="输入所需书币">
+<button onclick="search()">🔍 查询</button>
+<button id="undoBtn" onclick="undoDelete()">↶ 撤销删除</button>
+</div>
+<div id="captureArea">
+<div id="calcSection" style="display:none;flex-direction:column;align-items:center;margin-bottom:12px;font-size:16px;line-height:1.4;gap:4px;">
+<div id="needCoin" style="display:none;font-size:18px;font-weight:600;margin-bottom:0;"> 所需书币：<span id="inputCoin" style="display:inline-block;min-width:40px">0</span></div>
+<div id="result" style="margin:0;padding:0;"></div>
+<div id="dealAndTransfer" style="display:flex;font-size:16px;align-items:center;gap:20px;font-weight:600;">
+<div>成交价：<span id="dealPrice">0.00</span></div>
+<div>到手价：<span id="afterDealPrice">0.00</span></div>
+<div>本单赚取：<span id="profitPrice">0.00</span></div>
+<div>需转账：<span id="transferResult">0.00</span></div>
+</div>
+<div id="feeOptions" style="display:flex;font-size:14px;justify-content:center;gap:25px;font-weight:normal;">
+<label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="platformFee"> 6‰交易平台服务费</label>
+<label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="personalFee"> 10%个人手续费</label>
+</div>
+</div>
+</div>
+<button id="generateImgBtn" style="display:none;">生成查询结果图</button>
+<div id="imgPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:1000;flex-direction:column;">
+<div style="background:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;align-items:center;max-width:90%;">
+<img id="generatedImg" src="" alt="查询结果" style="width:600px;height:auto;margin-bottom:12px;border:1px solid #ccc;">
+<div id="imgTip" style="margin-bottom:12px;font-size:14px;color:#555;text-align:center;">复制图片 / 保存图片</div>
+<div style="display:flex;gap:12px;">
+<button id="copyImgBtn" class="imgBtn">复制图片</button>
+<button id="saveImgBtn" class="imgBtn">保存图片</button>
+</div>
+</div>
+</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 window.upperPool=window.upperPool||[];window.lowerPool=window.lowerPool||[];window.expiredPool=window.expiredPool||[];window.latestResult=window.latestResult||[];window.deletedStack=window.deletedStack||[];window.supplementStack=window.supplementStack||[];window.origPositionMap=window.origPositionMap||new Map();window.overlayButtons=window.overlayButtons||[];window.deletedIds=window.deletedIds||new Set();window.initialLatestLength=window.initialLatestLength||null;window.normalGroup=window.normalGroup||[];window.slowGroup=window.slowGroup||[];window.zhanGroup=window.zhanGroup||[];window.lowGroup=window.lowGroup||[];
-
-var a=[107,121,110,121,125,120,41,44,44,126,115,115,119,127,115,117,114], // 加密后的密码数组
-    p="wenxindushu_pwd_ok",
-    z="wenxindushu_table_cache",
-    latestResult=[];
+var a=[107,121,110,121,125,120,41,44,44,126,115,115,119,127,115,117,114], 
+p="wenxindushu_pwd_ok",
+z="wenxindushu_table_cache",
+latestResult=[];
 const STORAGE_KEY = p;
 const CACHE_KEY = z;
 function showPopup(msg, duration = 2000) {
-  const popup = document.createElement("div");
-  popup.innerText = msg;
-  popup.style.position = "fixed";
-  popup.style.top = "50%";
-  popup.style.left = "50%";
-  popup.style.transform = "translate(-50%,-50%)";
-  popup.style.background = "rgba(0,0,0,0.8)";
-  popup.style.color = "#fff";
-  popup.style.padding = "12px 20px";
-  popup.style.borderRadius = "6px";
-  popup.style.fontSize = "14px";
-  popup.style.zIndex = "10000";
-  popup.style.textAlign = "center";
-  document.body.appendChild(popup);
-  setTimeout(() => {
-    document.body.removeChild(popup)
-  }, duration);
+const popup = document.createElement("div");
+popup.innerText = msg;
+popup.style.position = "fixed";
+popup.style.top = "50%";
+popup.style.left = "50%";
+popup.style.transform = "translate(-50%,-50%)";
+popup.style.background = "rgba(0,0,0,0.8)";
+popup.style.color = "#fff";
+popup.style.padding = "12px 20px";
+popup.style.borderRadius = "6px";
+popup.style.fontSize = "14px";
+popup.style.zIndex = "10000";
+popup.style.textAlign = "center";
+document.body.appendChild(popup);
+setTimeout(() => {
+document.body.removeChild(popup)
+}, duration);
 }
 function checkPwd(){
-  const val = document.getElementById("pwdInput").value.trim();
-  let PASSWORD = '';
-  for(let i=0; i<a.length; i++){
-    PASSWORD += String.fromCharCode(a[i] ^ 28); 
-  }
-  if(val === PASSWORD){
-    localStorage.setItem(STORAGE_KEY,"true");
-    showMain();
-  } else {
-    document.getElementById("pwdMsg").innerText = "❌ 密码错误";
-  }
+const val = document.getElementById("pwdInput").value.trim();
+let PASSWORD = '';
+for(let i=0; i<a.length; i++){
+PASSWORD += String.fromCharCode(a[i] ^ 28); 
+}
+if(val === PASSWORD){
+localStorage.setItem(STORAGE_KEY,"true");
+showMain();
+} else {
+document.getElementById("pwdMsg").innerText = "❌ 密码错误";
+}
 }
 function showMain(){
-  document.getElementById("passwordArea").style.display="none";
-  document.getElementById("main").style.display="block";
-  document.getElementById("statusMsg").innerText = "";
-  const cached = localStorage.getItem(CACHE_KEY);
-  if(cached){
-    const container = document.getElementById("inputData");
-    container.innerHTML = cached;
-    document.getElementById("placeholderText").style.display = 'none';
-  }
+document.getElementById("passwordArea").style.display="none";
+document.getElementById("main").style.display="block";
+document.getElementById("statusMsg").innerText = "";
+const cached = localStorage.getItem(CACHE_KEY);
+if(cached){
+const container = document.getElementById("inputData");
+container.innerHTML = cached;
+document.getElementById("placeholderText").style.display = 'none';
+}
 }
 window.onload=function(){if(localStorage.getItem(STORAGE_KEY)==="true")showMain()};
 const inputData=document.getElementById('inputData');
@@ -162,257 +161,449 @@ function loadCacheTable(){const container=document.getElementById("inputData");c
 function clearInputData(){const container=document.getElementById("inputData");container.innerHTML="";placeholderText.style.display='block';document.getElementById("statusMsg").innerText=""}
 function classify(item) {if (item.是否暂停) return '弃置组';if (item.是否过期) return '过期组';if (item.信用分逻辑 < 6) return '弃置组';if (item.信用分逻辑 < 8) return '低分组';if (item.信用分逻辑 >= 8) {if (item.是否攒) return '攒币组';if (item.是否不接急单) return '低速组';return '正常组';}}
 function search(){
-  const container=document.getElementById("inputData");
-  const inputVal=parseFloat(document.getElementById("numInput").value);
-  if(!container.querySelector('table')){showPopup("请先加载缓存表格或手动粘贴数据");document.getElementById("result").innerHTML="";return}
-  if(isNaN(inputVal)){showPopup("请输入有效数字");return}
-  window.deletedIds=new Set();
-  window.deletedStack=[];
-  window.supplementStack=[];
-  window.initialLatestLength=null;
-  window.currentNum=inputVal;
-  const num=window.currentNum;
-  const table=container.querySelector('table');
-  let submitColIdx=6;
-  try{
-    let headerRow=table.querySelector('thead tr');
-    if(!headerRow)headerRow=table.rows[0];
-    if(headerRow){
-      const heads=Array.from(headerRow.cells||[]).map(h=>h.innerText.trim());
-      for(let i=0;i<heads.length;i++){if(/提交时间|更新时间|提交日期/.test(heads[i])){submitColIdx=i;break}}
-    }
-  }catch(e){}
-  const rows=Array.from(table.rows).slice(1);
-  function parseAccounts(row){
-    const cells=row.cells;
-    if(!cells||cells.length===0)return[];
-    const rawCredit=(cells[0]&&cells[0].innerText)?cells[0].innerText.trim():'';
-    const creditForLogic=parseFloat(rawCredit)||10;
-    const name=(cells[1]&&cells[1].innerText)?cells[1].innerText.trim():'';
-    const accounts=[
-      cells[2]?cells[2].innerText.trim():'',
-      cells[3]?cells[3].innerText.trim():'',
-      cells[4]?cells[4].innerText.trim():'',
-      cells[5]?cells[5].innerText.trim():''
-    ];
-    const submit=(cells[submitColIdx]&&cells[submitColIdx].innerText)?cells[submitColIdx].innerText.trim():'';
-    const updateStr=submit;
-    const list=[];
-    accounts.forEach((text,k)=>{if(!text)return;const valMatch=text.replace(/,/g,'').match(/\d+(\.\d+)?/);const val=valMatch?parseFloat(valMatch[0]):null; if(val!==null){const updateTs=parseTimeToTs(updateStr)||parseTimeToTs(submit)||null;list.push({群昵称:name,账号:`账号${k+1}`,书币:text,提交时间:formatUpdateTime(submit),更新时间:formatUpdateTime(updateStr),更新时间_ts:updateTs,是否过期:/过期|到期/.test(text),是否攒:/攒/.test(text),是否暂停:/暂停接单/.test(text),是否不接急单:/不接急单/.test(text),数值:val,信用分:rawCredit===""?10:(parseFloat(rawCredit)||10),信用分逻辑:creditForLogic,原始时间:submit,提交时间原始:submit})}});
-    return list;
-  }
-  let expiredGroup=[],normalGroup=[],slowGroup=[],zhanGroup=[],lowGroup=[],discardGroup=[];
-  rows.forEach(row=>{parseAccounts(row).forEach(item=>{const g=classify(item);switch(g){case'过期组':expiredGroup.push(item);break;case'正常组':normalGroup.push(item);break;case'低速组':slowGroup.push(item);break;case'攒币组':zhanGroup.push(item);break;case'低分组':lowGroup.push(item);break;case'弃置组':discardGroup.push(item);break}})});
-  window.normalGroup=normalGroup;window.slowGroup=slowGroup;window.zhanGroup=zhanGroup;window.lowGroup=lowGroup;
-  window.upperPool=[];window.lowerPool=[];window.expiredPool=[];window.latestResult=[];window.origPositionMap=new Map();window.overlayButtons=[];
-    window.expiredPool=expiredGroup.filter(r=>r.数值>=num-10).sort((a,b)=>{if(a.数值!== b.数值)return a.数值-b.数值;if(a.信用分!== b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0);});
-  const upperCandidates=[...normalGroup,...slowGroup,...zhanGroup,...lowGroup].filter(r=>!r.是否过期&&r.数值>=num-10&&r.数值<num);
-  const upperGroupOrder=['低分组','攒币组','低速组','正常组'];
-  upperCandidates.sort((a,b)=>{const ga=upperGroupOrder.indexOf(classify(a)),gb=upperGroupOrder.indexOf(classify(b));if(ga!==gb)return ga-gb;if(a.数值!==b.数值)return a.数值-b.数值;if(a.信用分!==b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0)});
-  const firstSelected=upperCandidates.slice(Math.max(0,upperCandidates.length-3));
-  window.upperPool=upperCandidates.map(r=>{if(!r._key)r._key=`${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;return r;});
-  const lowerCandidatesAll=[...normalGroup,...slowGroup,...zhanGroup,...lowGroup].filter(r=>!r.是否过期&&r.数值>=num);
-  lowerCandidatesAll.forEach(r=>{if(!r._key)r._key=`${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`});
-  const globalMax=lowerCandidatesAll.length>0?Math.max(...lowerCandidatesAll.map(r=>r.数值)):num;
-  const step=10;const maxSegments=200;const lowerPoolFull=[];const lowerSeen=new Set();
-  for(let seg=0;seg<maxSegments;seg++){
-    const start=num+seg*step;const end=start+step;
-    let segItems=lowerCandidatesAll.filter(r=>r.数值>=start&&r.数值<end);
-    if(segItems.length>0){
-      const order=['正常组','低速组','攒币组','低分组'];
-      segItems.sort((a,b)=>{const ga=order.indexOf(classify(a)),gb=order.indexOf(classify(b));if(ga!==gb)return ga-gb;if(a.数值!==b.数值)return a.数值-b.数值;if(a.信用分!==b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0)});
-      for(const it of segItems){if(!lowerSeen.has(it._key)){lowerPoolFull.push(it);lowerSeen.add(it._key)}}
-    }
-    if(end>=globalMax)break;
-    if(seg*step>10000&&lowerPoolFull.length===0)break;
-  }
-  if(lowerPoolFull.length<4&&lowerCandidatesAll.length>lowerPoolFull.length){
-    const remaining=lowerCandidatesAll.filter(r=>!lowerSeen.has(r._key));
-    const order=['正常组','低速组','攒币组','低分组'];
-    remaining.sort((a,b)=>{const ga=order.indexOf(classify(a)),gb=order.indexOf(classify(b));if(ga!==gb)return ga-gb;if(a.数值!==b.数值)return a.数值-b.数值;if(a.信用分!==b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0)});
-    for(const it of remaining){if(!lowerSeen.has(it._key)){lowerPoolFull.push(it);lowerSeen.add(it._key);if(lowerPoolFull.length>=40)break}}
-  }
-  window.lowerPool=lowerPoolFull.map(r=>{if(!r._key)r._key=`${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;return r});
-  const secondSelected=lowerPoolFull.slice(0,4);
-  const firstForDisplay=firstSelected.slice();
-  const secondForDisplay=secondSelected.slice();
-  let nonExpiredArray=[...firstForDisplay,...secondForDisplay];
-  if(nonExpiredArray.length>7)nonExpiredArray=nonExpiredArray.slice(0,7);
-  const allList=[...window.expiredPool,...nonExpiredArray];
-  allList.forEach((r,idx)=>{if(!r._key)r._key=`${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;r._origPos=idx;window.origPositionMap.set(r._key,idx)});
-  window.latestResult=allList;
-  window.initialLatestLength=window.latestResult.length;
-  updateHighlight();
-  renderTableAll();
-  renderCalcSection(num);
+const container=document.getElementById("inputData");
+const inputVal=parseFloat(document.getElementById("numInput").value);
+if(!container.querySelector('table')){showPopup("请先加载缓存表格或手动粘贴数据");document.getElementById("result").innerHTML="";return}
+if(isNaN(inputVal)){showPopup("请输入有效数字");return}
+window.deletedIds=new Set();
+window.deletedStack=[];
+window.supplementStack=[];
+window.initialLatestLength=null;
+window.currentNum=inputVal;
+const num=window.currentNum;
+const table=container.querySelector('table');
+let submitColIdx=6;
+try{
+let headerRow=table.querySelector('thead tr');
+if(!headerRow)headerRow=table.rows[0];
+if(headerRow){
+const heads=Array.from(headerRow.cells||[]).map(h=>h.innerText.trim());
+for(let i=0;i<heads.length;i++){if(/提交时间|更新时间|提交日期/.test(heads[i])){submitColIdx=i;break}}
 }
-function getUpperSupplement(num){
-  if(Array.isArray(window.upperPool)){for(let i=window.upperPool.length-1;i>=0;i--){const r=window.upperPool[i];const k=r._key;const isShown=window.latestResult&&window.latestResult.some(x=>x._key===k);const isDeleted=window.deletedIds&&window.deletedIds.has(k);const isSupped=window.supplementStack&&window.supplementStack.some(x=>x._key===k);if(!isShown&&!isDeleted&&!isSupped&&r.数值>=num-10&&r.数值<num)return r}}const all=[...window.normalGroup,...window.slowGroup,...window.zhanGroup,...window.lowGroup];all.sort((a,b)=>a.数值-b.数值);for(let i=all.length-1;i>=0;i--){const r=all[i];const k=r._key||`${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;if(!r._key)r._key=k;const isShown=window.latestResult&&window.latestResult.some(x=>x._key===k);const isDeleted=window.deletedIds&&window.deletedIds.has(k);if(!isShown&&!isDeleted&&r.数值>=num-10&&r.数值<num)return r}return null
+}catch(e){}
+const rows=Array.from(table.rows).slice(1);
+function parseAccounts(row){
+const cells=row.cells;
+if(!cells||cells.length===0)return[];
+const rawCredit=(cells[0]&&cells[0].innerText)?cells[0].innerText.trim():'';
+const creditForLogic=parseFloat(rawCredit)||10;
+const name=(cells[1]&&cells[1].innerText)?cells[1].innerText.trim():'';
+const accounts=[
+cells[2]?cells[2].innerText.trim():'',
+cells[3]?cells[3].innerText.trim():'',
+cells[4]?cells[4].innerText.trim():'',
+cells[5]?cells[5].innerText.trim():''
+];
+const submit=(cells[submitColIdx]&&cells[submitColIdx].innerText)?cells[submitColIdx].innerText.trim():'';
+const updateStr=submit;
+const list=[];
+accounts.forEach((text,k)=>{if(!text)return;const valMatch=text.replace(/,/g,'').match(/\d+(\.\d+)?/);const val=valMatch?parseFloat(valMatch[0]):null; if(val!==null){const updateTs=parseTimeToTs(updateStr)||parseTimeToTs(submit)||null;list.push({群昵称:name,账号:`账号${k+1}`,书币:text,提交时间:formatUpdateTime(submit),更新时间:formatUpdateTime(updateStr),更新时间_ts:updateTs,是否过期:/过期|到期/.test(text),是否攒:/攒/.test(text),是否暂停:/暂停接单/.test(text),是否不接急单:/不接急单/.test(text),数值:val,信用分:rawCredit===""?10:(parseFloat(rawCredit)||10),信用分逻辑:creditForLogic,原始时间:submit,提交时间原始:submit})}});
+return list;
 }
-function getLowerSupplement(num){
-  if(Array.isArray(window.lowerPool)){for(let i=0;i<window.lowerPool.length;i++){const r=window.lowerPool[i];const k=r._key;const isShown=window.latestResult&&window.latestResult.some(x=>x._key===k);const isDeleted=window.deletedIds&&window.deletedIds.has(k);const isSupped=window.supplementStack&&window.supplementStack.some(x=>x._key===k);if(!isShown&&!isDeleted&&!isSupped&&r.数值>=num)return r}}const all=[...window.normalGroup,...window.slowGroup,...window.zhanGroup,...window.lowGroup].filter(r=>r.数值>=num);const order=['正常组','低速组','攒币组','低分组'];all.sort((a,b)=>{const ga=order.indexOf(classify(a)),gb=order.indexOf(classify(b));if(ga!==gb)return ga-gb;if(a.数值!==b.数值)return a.数值-b.数值;if(a.信用分!==b.信用分)return(b.信用分||0)-(a.信用分||0);return(b.更新时间_ts||0)-(a.更新时间_ts||0)});for(const r of all){const k=r._key||`${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;if(!r._key)r._key=k;const isShown=window.latestResult&&window.latestResult.some(x=>x._key===k);const isDeleted=window.deletedIds&&window.deletedIds.has(k);if(!isShown&&!isDeleted)return r}return null}
-function deleteRowByKey(key){
-  if(!window.latestResult&&!window.expiredPool)return;
-  const idx=window.latestResult?window.latestResult.findIndex(r=>r._key===key):-1;
-  let deleted=null;let deletedFromExpired=false;let deletedExpiredIdx=-1;
-  if(idx!==-1){deleted=window.latestResult.splice(idx,1)[0]}else if(Array.isArray(window.expiredPool)){const idxE=window.expiredPool.findIndex(r=>r._key===key);if(idxE!==-1){deleted=window.expiredPool.splice(idxE,1)[0];deletedFromExpired=true;deletedExpiredIdx=idxE}}
-  if(!deleted)return;
-  const delKey=deleted._key||`${deleted.群昵称}||${deleted.账号}||${deleted.书币}||${deleted.原始时间}`;
-  if(!window.deletedIds)window.deletedIds=new Set();
-  window.deletedIds.add(delKey);
-  const record={deleted:deleted,supplement:null,deletedIndex:idx,deletedFromExpired:deletedFromExpired,deletedExpiredIdx:deletedExpiredIdx};
-  if(!deleted.是否过期){
-    const num=window.currentNum;let newItem=null;
-    if(deleted.数值<num){
-      if(window.initialLatestLength===null||window.latestResult.length<window.initialLatestLength){
-        newItem=getUpperSupplement(num);
-        if(newItem){if(!newItem._key)newItem._key=`${newItem.群昵称}||${newItem.账号}||${newItem.书币}||${newItem.原始时间}`;const insertIndex=(window.expiredPool&&window.expiredPool.length)?window.expiredPool.length:0;window.latestResult.splice(insertIndex,0,newItem);record.supplement=newItem;window.supplementStack.push(newItem)}
-      }
-    }else{
-      if(window.initialLatestLength===null||window.latestResult.length<window.initialLatestLength){
-        newItem=getLowerSupplement(num);
-        if(newItem){if(!newItem._key)newItem._key=`${newItem.群昵称}||${newItem.账号}||${newItem.书币}||${newItem.原始时间}`;window.latestResult.push(newItem);record.supplement=newItem;window.supplementStack.push(newItem)}
-      }
-    }
-  }
-  record.deleted._key=record.deleted._key||delKey;
-  record.deleted._origPos=(record.deleted._origPos!==undefined)?record.deleted._origPos:record.deletedIndex;
-  window.deletedStack.push(record);
-  updateHighlight();
-  renderTableAll();
+let expiredGroup=[],normalGroup=[],slowGroup=[],zhanGroup=[],lowGroup=[],discardGroup=[];
+rows.forEach(row=>{parseAccounts(row).forEach(item=>{const g=classify(item);switch(g){case'过期组':expiredGroup.push(item);break;case'正常组':normalGroup.push(item);break;case'低速组':slowGroup.push(item);break;case'攒币组':zhanGroup.push(item);break;case'低分组':lowGroup.push(item);break;case'弃置组':discardGroup.push(item);break}})});
+window.normalGroup=normalGroup;window.slowGroup=slowGroup;window.zhanGroup=zhanGroup;window.lowGroup=lowGroup;
+window.upperPool=[];window.lowerPool=[];window.expiredPool=[];window.latestResult=[];window.origPositionMap=new Map();window.overlayButtons=[];
+const expiredAll = Array.isArray(window.expiredGroup) ? window.expiredGroup
+: (typeof expiredGroup !== 'undefined' && Array.isArray(expiredGroup) ? expiredGroup : []);
+const expiredFiltered = (expiredAll || []).filter(r => typeof r.数值 === 'number' && r.数值 >= num - 10);
+expiredFiltered.sort((a, b) => {
+if (a.数值 !== b.数值) return a.数值 - b.数值;
+if (a.信用分 !== b.信用分) return (b.信用分 || 0) - (a.信用分 || 0);
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+});
+window.expiredPool = expiredFiltered.slice();
+const allCandidates = [...(window.normalGroup || []), ...(window.slowGroup || []), ...(window.zhanGroup || []), ...(window.lowGroup || [])];
+const upperCandidates = allCandidates.filter(r => typeof r.数值 === 'number' && r.数值 >= num - 10 && r.数值 < num);
+const upperGroupOrder = ['低分组', '攒币组', '低速组', '正常组'];
+upperCandidates.sort((a, b) => {
+const ga = upperGroupOrder.indexOf(classify(a)), gb = upperGroupOrder.indexOf(classify(b));
+if (ga !== gb) return ga - gb;
+if (a.数值 !== b.数值) return a.数值 - b.数值;
+if (a.信用分 !== b.信用分) return (b.信用分 || 0) - (a.信用分 || 0);
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+});
+const expiredUpper = window.expiredPool.filter(r => typeof r.数值 === 'number' && r.数值 < num);
+const fullUpperPool = [...upperCandidates, ...expiredUpper];
+fullUpperPool.forEach(r => { if (!r._key) r._key = `${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`; });
+window.upperPool = fullUpperPool.slice();
+const upperForDisplay = fullUpperPool.slice(Math.max(0, fullUpperPool.length - 3));
+const lowerCandidatesAll = allCandidates.filter(r => typeof r.数值 === 'number' && r.数值 >= num);
+lowerCandidatesAll.forEach(r => { if (!r._key) r._key = `${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`; });
+const expiredLower = window.expiredPool.filter(r => typeof r.数值 === 'number' && r.数值 >= num);
+expiredLower.forEach(r => { if (!r._key) r._key = `${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`; });
+const step = 10;
+const maxSegments = 200;
+const lowerPoolFull = [];
+const lowerSeen = new Set();
+for (const r of expiredLower) {
+if (!lowerSeen.has(r._key)) {
+lowerPoolFull.push(r);
+lowerSeen.add(r._key);
 }
-function undoDelete(){
-  if(!window.deletedStack||window.deletedStack.length===0)return;
-  const record=window.deletedStack.pop();
-  const toRestore=record.deleted;
-  const sup=record.supplement;
-  if(sup){const supKey=sup._key;const supIdx=window.latestResult.findIndex(x=>x._key===supKey);if(supIdx!==-1)window.latestResult.splice(supIdx,1);window.supplementStack=window.supplementStack.filter(x=>x._key!==supKey)}
-  const delKey=toRestore._key||`${toRestore.群昵称}||${toRestore.账号}||${toRestore.书币}||${toRestore.原始时间}`;
-  if(window.deletedIds&&window.deletedIds.delete)window.deletedIds.delete(delKey);
-  if(record.deletedFromExpired){const insertIdx=(typeof record.deletedExpiredIdx==='number'&&record.deletedExpiredIdx>=0)?Math.min(record.deletedExpiredIdx,window.expiredPool.length):window.expiredPool.length;window.expiredPool.splice(insertIdx,0,toRestore)}else{const origPos=(toRestore._origPos!==undefined)?toRestore._origPos:window.latestResult.length;const insertPos=Math.min(Math.max(0,origPos),window.latestResult.length);const existingIdx=window.latestResult.findIndex(x=>x._key===toRestore._key);if(existingIdx!==-1)window.latestResult.splice(existingIdx,1);window.latestResult.splice(insertPos,0,toRestore)}
-  updateHighlight();
-  renderTableAll();
 }
-function updateHighlight(){
-  const num=window.currentNum;
-  const nonExpiredShown=window.latestResult?window.latestResult.filter(r=>!r.是否过期):[];
-  if(!nonExpiredShown||nonExpiredShown.length===0){window.highlightValue=null;window.highlightKey=null;window.highlightGroup=null;return}
-  const firstLower=nonExpiredShown.find(r=>r.数值>=num);
-  if(firstLower){window.highlightValue=firstLower.数值;window.highlightKey=firstLower._key;window.highlightGroup=classify(firstLower);return}
-  nonExpiredShown.sort((a,b)=>{const da=Math.abs(a.数值-num),db=Math.abs(b.数值-num);if(da!==db)return da-db;const ca=(a.信用分||0),cb=(b.信用分||0);if(ca!==cb)return cb-ca;const ta=a.更新时间_ts||0,tb=b.更新时间_ts||0;return tb-ta});
-  const chosen=nonExpiredShown[0];
-  window.highlightValue=chosen?chosen.数值:null;window.highlightKey=chosen?chosen._key:null;window.highlightGroup=chosen?classify(chosen):null;
+const globalMax = lowerCandidatesAll.length > 0 ? Math.max(...lowerCandidatesAll.map(r => r.数值)) : num;
+for (let seg = 0; seg < maxSegments; seg++) {
+const start = num + seg * step;
+const end = start + step;
+const segItems = lowerCandidatesAll.filter(r => r.数值 >= start && r.数值 < end && !lowerSeen.has(r._key));
+if (segItems.length > 0) {
+const order = ['正常组', '低速组', '攒币组', '低分组'];
+segItems.sort((a, b) => {
+const ga = order.indexOf(classify(a)), gb = order.indexOf(classify(b));
+if (ga !== gb) return ga - gb;
+if (a.数值 !== b.数值) return a.数值 - b.数值;
+if (a.信用分 !== b.信用分) return (b.信用分 || 0) - (a.信用分 || 0);
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+});
+for (const it of segItems) {
+lowerPoolFull.push(it);
+lowerSeen.add(it._key);
 }
-function renderTableAll(){
-  const resultDiv=document.getElementById("result");
-  if(!resultDiv)return;
-  if(!window.overlayButtons)window.overlayButtons=[];
-  window.overlayButtons.forEach(b=>b.remove());
-  window.overlayButtons=[];
-  const num=window.currentNum;
-  let html="";
-  function wrapCell(content){return`<div class="multi-wrap"><div class="multi-line">${content}</div></div>`}
-  if(Array.isArray(window.expiredPool)&&window.expiredPool.length>0){
-    html+="<table style='table-layout:fixed;width:100%;border-collapse:collapse;margin-bottom:4px;'><thead><tr>";
-    html+="<th style='width:20%; text-align:center;'>群昵称</th>";
-    html+="<th style='width:15%; text-align:center;'>账号</th>";
-    html+="<th style='width:30%; text-align:center;'>书币</th>";
-    html+="<th style='width:15%; text-align:center;'>更新时间</th>";
-    html+="<th style='width:10%; text-align:center;'>信用分</th>";
-    html+="<th style='width:10%; text-align:center;'>删除</th></tr></thead><tbody>";
-    window.expiredPool.forEach(r=>{
-      const style="color:#ff0000;font-weight:bold;";
-      const delCell=`<div style="text-align:center;"><svg onclick="deleteRowByKey('${r._key}')" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#888888" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer;"><path d="M7,3 a1.2,1.2 0 0 1 1.2,-1.2 h7.6 a1.2,1.2 0 0 1 1.2,1.2 v2 h-10 z" fill="none"/><line x1="2.5" y1="5" x2="21.5" y2="5"/><path d="M6,5 v14 a1.2,1.2 0 0 0 1.2,1.2 h9.6 a1.2,1.2 0 0 0 1.2,-1.2 v-14" fill="none"/><line x1="9" y1="7" x2="9" y2="17"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="15" y1="7" x2="15" y2="17"/></svg></div>`;
-      html+=`<tr data-key="${r._key}"><td style="text-align:center;">${r.群昵称}</td><td style="text-align:center;">${r.账号}</td><td style="text-align:center;${style}">${r.书币}</td><td style="text-align:center;">${r.更新时间}</td><td style="text-align:center;">${r.信用分}</td><td style="text-align:center;">${delCell}</td></tr>`;
-    });
-    html+="</tbody></table>";
-  }
-  const nonExpired=window.latestResult.filter(r=>!r.是否过期);
-  if(nonExpired.length>0){
-    html+="<table style='table-layout:fixed;width:100%;border-collapse:collapse;'><thead><tr>";
-    html+="<th style='width:20%; text-align:center;'>群昵称</th>";
-    html+="<th style='width:15%; text-align:center;'>账号</th>";
-    html+="<th style='width:30%; text-align:center;'>书币</th>";
-    html+="<th style='width:15%; text-align:center;'>更新时间</th>";
-    html+="<th style='width:10%; text-align:center;'>信用分</th>";
-    html+="<th style='width:10%; text-align:center;'>删除</th></tr></thead><tbody>";
-    nonExpired.forEach(r=>{
-      let style="";
-      const group=classify(r);
-      switch(group){case'正常组':style="color:#333;font-weight:bold;";break;case'低速组':style="color:#336699;";break;case'攒币组':style="color:#555;";break;case'低分组':style="color:#aaa;";break}
-      const isDeletedMarked=window.deletedIds&&window.deletedIds.has(r._key);
-      const isHighlight=(window.highlightKey&&r._key===window.highlightKey);
-      if(isHighlight)style+="background:yellow;";
-      const delCell=`<div style="text-align:center;"><svg onclick="deleteRowByKey('${r._key}')" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#888888" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer;"><path d="M7,3 a1.2,1.2 0 0 1 1.2,-1.2 h7.6 a1.2,1.2 0 0 1 1.2,1.2 v2 h-10 z" fill="none"/><line x1="2.5" y1="5" x2="21.5" y2="5"/><path d="M6,5 v14 a1.2,1.2 0 0 0 1.2,1.2 h9.6 a1.2,1.2 0 0 0 1.2,-1.2 v-14" fill="none"/><line x1="9" y1="7" x2="9" y2="17"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="15" y1="7" x2="15" y2="17"/></svg></div>`;
-      html+=`<tr data-key="${r._key}" class="${isHighlight?'highlight-row':''} ${isDeletedMarked?'deleted-mark':''}"><td style="text-align:center;">${r.群昵称}</td><td style="text-align:center;">${r.账号}</td><td style="text-align:center;${style}">${r.书币}</td><td style="text-align:center;">${r.更新时间}</td><td style="text-align:center;">${r.信用分}</td><td style="text-align:center;">${delCell}</td></tr>`;
-    });
-    html+="</tbody></table>";
-  }
-  resultDiv.innerHTML=html;
-  const actionButtonsEl=document.getElementById("actionButtons");
-  if(actionButtonsEl)actionButtonsEl.style.display=window.latestResult.length?"flex":"none";
+}
+if (end >= globalMax) break;
+}
+if (lowerPoolFull.length < 4 && lowerCandidatesAll.length > lowerPoolFull.length) {
+const remaining = lowerCandidatesAll.filter(r => !lowerSeen.has(r._key));
+const order = ['正常组', '低速组', '攒币组', '低分组'];
+remaining.sort((a, b) => {
+const ga = order.indexOf(classify(a)), gb = order.indexOf(classify(b));
+if (ga !== gb) return ga - gb;
+if (a.数值 !== b.数值) return a.数值 - b.数值;
+if (a.信用分 !== b.信用分) return (b.信用分 || 0) - (a.信用分 || 0);
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+});
+for (const it of remaining) {
+if (!lowerSeen.has(it._key)) {
+lowerPoolFull.push(it);
+lowerSeen.add(it._key);
+if (lowerPoolFull.length >= 40) break;
+}
+}
+}
+window.lowerPool = lowerPoolFull.slice();
+const lowerForDisplay = lowerPoolFull.slice(0, 4);
+const mergedDisplay = [...upperForDisplay, ...lowerForDisplay].slice(0, 7);
+window.latestResult = mergedDisplay.slice();
+window.latestResult.forEach((r, idx) => {
+if (!r._key) r._key = `${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;
+r._origPos = idx;
+window.origPositionMap.set(r._key, idx);
+});
+window.initialLatestLength = window.latestResult.length;
+updateHighlight();
+renderTableAll();
+if (typeof renderCalcSection === 'function') renderCalcSection(num);
+}
+function getUpperSupplement(num) {
+if (Array.isArray(window.upperPool)) {
+for (let i = window.upperPool.length - 1; i >= 0; i--) {
+const r = window.upperPool[i];
+const k = r._key;
+const isShown = window.latestResult && window.latestResult.some(x => x._key === k);
+const isDeleted = window.deletedIds && window.deletedIds.has(k);
+const isSupped = window.supplementStack && window.supplementStack.some(x => x._key === k);
+if (!isShown && !isDeleted && !isSupped && r.数值 >= num - 10 && r.数值 < num) return r;
+}
+}
+const all = [
+...(window.normalGroup || []),
+...(window.slowGroup || []),
+...(window.zhanGroup || []),
+...(window.lowGroup || []),
+...(window.expiredPool || [])
+];
+all.sort((a, b) => a.数值 - b.数值); 
+for (let i = all.length - 1; i >= 0; i--) {
+const r = all[i];
+const k = r._key || `${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;
+if (!r._key) r._key = k;
+const isShown = window.latestResult && window.latestResult.some(x => x._key === k);
+const isDeleted = window.deletedIds && window.deletedIds.has(k);
+const isSupped = window.supplementStack && window.supplementStack.some(x => x._key === k);
+if (!isShown && !isDeleted && !isSupped && typeof r.数值 === 'number' && r.数值 >= num - 10 && r.数值 < num) return r;
+}
+return null;
+}
+function getLowerSupplement(num) {
+if (Array.isArray(window.lowerPool)) {
+for (let i = 0; i < window.lowerPool.length; i++) {
+const r = window.lowerPool[i];
+const k = r._key;
+const isShown = window.latestResult && window.latestResult.some(x => x._key === k);
+const isDeleted = window.deletedIds && window.deletedIds.has(k);
+const isSupped = window.supplementStack && window.supplementStack.some(x => x._key === k);
+if (!isShown && !isDeleted && !isSupped && r.数值 >= num) return r;
+}
+}
+const all = [
+...(window.normalGroup || []),
+...(window.slowGroup || []),
+...(window.zhanGroup || []),
+...(window.lowGroup || []),
+...(window.expiredPool || [])
+].filter(r => typeof r.数值 === 'number' && r.数值 >= num);
+const order = ['正常组', '低速组', '攒币组', '低分组'];
+all.sort((a, b) => {
+const ga = order.indexOf(classify(a)), gb = order.indexOf(classify(b));
+if (ga !== gb) return ga - gb;
+if (a.数值 !== b.数值) return a.数值 - b.数值;
+if (a.信用分 !== b.信用分) return (b.信用分 || 0) - (a.信用分 || 0);
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+});
+for (const r of all) {
+const k = r._key || `${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;
+if (!r._key) r._key = k;
+const isShown = window.latestResult && window.latestResult.some(x => x._key === k);
+const isDeleted = window.deletedIds && window.deletedIds.has(k);
+const isSupped = window.supplementStack && window.supplementStack.some(x => x._key === k);
+if (!isShown && !isDeleted && !isSupped) return r;
+}
+return null;
+}
+function deleteRowByKey(key) {
+if (!window.latestResult) return;
+const idx = window.latestResult.findIndex(r => r._key === key);
+let deleted = null;
+let deletedFromExpired = false;
+let deletedExpiredIdx = -1;
+if (idx !== -1) {
+deleted = window.latestResult.splice(idx, 1)[0];
+} else if (Array.isArray(window.expiredPool)) {
+const idxE = window.expiredPool.findIndex(r => r._key === key);
+if (idxE !== -1) {
+deleted = window.expiredPool.splice(idxE, 1)[0];
+deletedFromExpired = true;
+deletedExpiredIdx = idxE;
+}
+}
+if (!deleted) return;
+const delKey = deleted._key || `${deleted.群昵称}||${deleted.账号}||${deleted.书币}||${deleted.原始时间}`;
+if (!window.deletedIds) window.deletedIds = new Set();
+window.deletedIds.add(delKey);
+const record = {
+deleted: deleted,
+supplement: null,
+deletedIndex: idx,
+deletedFromExpired,
+deletedExpiredIdx
+};
+const num = window.currentNum;
+let newItem = null;
+if (typeof deleted.数值 === 'number' && deleted.数值 < num) {
+if (window.initialLatestLength === null || window.latestResult.length < window.initialLatestLength) {
+newItem = getUpperSupplement(num);
+if (newItem) {
+if (!newItem._key) newItem._key = `${newItem.群昵称}||${newItem.账号}||${newItem.书币}||${newItem.原始时间}`;
+const insertIndex = 0;
+window.latestResult.splice(insertIndex, 0, newItem);
+record.supplement = newItem;
+window.supplementStack = window.supplementStack || [];
+window.supplementStack.push(newItem);
+}
+}
+} else {
+if (window.initialLatestLength === null || window.latestResult.length < window.initialLatestLength) {
+newItem = getLowerSupplement(num);
+if (newItem) {
+if (!newItem._key) newItem._key = `${newItem.群昵称}||${newItem.账号}||${newItem.书币}||${newItem.原始时间}`;
+window.latestResult.push(newItem);
+record.supplement = newItem;
+window.supplementStack = window.supplementStack || [];
+window.supplementStack.push(newItem);
+}
+}
+}
+record.deleted._key = record.deleted._key || delKey;
+record.deleted._origPos = (record.deleted._origPos !== undefined) ? record.deleted._origPos : record.deletedIndex;
+window.deletedStack = window.deletedStack || [];
+window.deletedStack.push(record);
+updateHighlight();
+renderTableAll();
+}
+function undoDelete() {
+if (!window.deletedStack || window.deletedStack.length === 0) return;
+const record = window.deletedStack.pop();
+const toRestore = record.deleted;
+const sup = record.supplement;
+if (sup) {
+const supKey = sup._key;
+const supIdx = window.latestResult.findIndex(x => x._key === supKey);
+if (supIdx !== -1) window.latestResult.splice(supIdx, 1);
+window.supplementStack = (window.supplementStack || []).filter(x => x._key !== supKey);
+}
+const delKey = toRestore._key || `${toRestore.群昵称}||${toRestore.账号}||${toRestore.书币}||${toRestore.原始时间}`;
+if (window.deletedIds && window.deletedIds.delete) window.deletedIds.delete(delKey);
+const origPos = (toRestore._origPos !== undefined) ? toRestore._origPos : window.latestResult.length;
+const insertPos = Math.min(Math.max(0, origPos), window.latestResult.length);
+const existingIdx = window.latestResult.findIndex(x => x._key === toRestore._key);
+if (existingIdx !== -1) window.latestResult.splice(existingIdx, 1);
+window.latestResult.splice(insertPos, 0, toRestore);
+updateHighlight();
+renderTableAll();
+}
+function updateHighlight() {
+const num = window.currentNum;
+const shown = Array.isArray(window.latestResult) ? window.latestResult : [];
+if (!shown || shown.length === 0) {
+window.highlightValue = null;
+window.highlightKey = null;
+window.highlightGroup = null;
+return;
+}
+const firstLowerExpired = shown.find(r => typeof r.数值 === 'number' && r.数值 >= num && r.是否过期);
+if (firstLowerExpired) {
+window.highlightValue = firstLowerExpired.数值;
+window.highlightKey = firstLowerExpired._key;
+window.highlightGroup = classify(firstLowerExpired);
+return;
+}
+for (let i = shown.length - 1; i >= 0; i--) {
+const r = shown[i];
+if (typeof r.数值 === 'number' && r.数值 < num && r.是否过期) {
+window.highlightValue = r.数值;
+window.highlightKey = r._key;
+window.highlightGroup = classify(r);
+return;
+}
+}
+const firstLowerNonExpired = shown.find(r => typeof r.数值 === 'number' && r.数值 >= num && !r.是否过期);
+if (firstLowerNonExpired) {
+window.highlightValue = firstLowerNonExpired.数值;
+window.highlightKey = firstLowerNonExpired._key;
+window.highlightGroup = classify(firstLowerNonExpired);
+return;
+}
+for (let i = shown.length - 1; i >= 0; i--) {
+const r = shown[i];
+if (typeof r.数值 === 'number' && r.数值 < num && !r.是否过期) {
+window.highlightValue = r.数值;
+window.highlightKey = r._key;
+window.highlightGroup = classify(r);
+return;
+}
+}
+const fallback = shown[0];
+window.highlightValue = fallback ? fallback.数值 : null;
+window.highlightKey = fallback ? fallback._key : null;
+window.highlightGroup = fallback ? classify(fallback) : null;
+}
+function renderTableAll() {
+const resultDiv = document.getElementById("result");
+if (!resultDiv) return;
+if (!window.overlayButtons) window.overlayButtons = [];
+window.overlayButtons.forEach(b => b.remove());
+window.overlayButtons = [];
+const num = window.currentNum;
+let html = "";
+const allShown = Array.isArray(window.latestResult) ? window.latestResult : [];
+if (allShown.length > 0) {
+html += "<table style='table-layout:fixed;width:100%;border-collapse:collapse;'><thead><tr>";
+html += "<th style='width:20%; text-align:center;'>群昵称</th>";
+html += "<th style='width:15%; text-align:center;'>账号</th>";
+html += "<th style='width:30%; text-align:center;'>书币</th>";
+html += "<th style='width:15%; text-align:center;'>更新时间</th>";
+html += "<th style='width:10%; text-align:center;'>信用分</th>";
+html += "<th style='width:10%; text-align:center;'>删除</th></tr></thead><tbody>";
+allShown.forEach(r => {
+let style = "";
+if (r.是否过期) style += "color:#ff0000;font-weight:bold;";
+const group = classify(r);
+switch (group) {
+case '正常组': style += "color:#333;font-weight:bold;"; break;
+case '低速组': style += "color:#336699;"; break;
+case '攒币组': style += "color:#555;"; break;
+case '低分组': style += "color:#aaa;"; break;
+}
+const isDeletedMarked = window.deletedIds && window.deletedIds.has(r._key);
+const isHighlight = (window.highlightKey && r._key === window.highlightKey);
+if (isHighlight) style += "background:yellow;";
+const delCell = `<div style="text-align:center;">
+<svg onclick="deleteRowByKey('${r._key}')" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#888888" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" style="cursor:pointer;">
+<path d="M7,3 a1.2,1.2 0 0 1 1.2,-1.2 h7.6 a1.2,1.2 0 0 1 1.2,1.2 v2 h-10 z" fill="none"/>
+<line x1="2.5" y1="5" x2="21.5" y2="5"/>
+<path d="M6,5 v14 a1.2,1.2 0 0 0 1.2,1.2 h9.6 a1.2,1.2 0 0 0 1.2,-1.2 v-14" fill="none"/>
+<line x1="9" y1="7" x2="9" y2="17"/>
+<line x1="12" y1="7" x2="12" y2="17"/>
+<line x1="15" y1="7" x2="15" y2="17"/></svg></div>`;
+html += `<tr data-key="${r._key}" class="${isHighlight? 'highlight-row':''} ${isDeletedMarked? 'deleted-mark':''}">
+<td style="text-align:center;">${r.群昵称}</td>
+<td style="text-align:center;">${r.账号}</td>
+<td style="text-align:center;${style}">${r.书币}</td>
+<td style="text-align:center;">${r.更新时间}</td>
+<td style="text-align:center;">${r.信用分}</td>
+<td style="text-align:center;">${delCell}</td>
+</tr>`;
+});
+html += "</tbody></table>";
+} else {
+html = "<div style='color:#666;padding:8px;text-align:center;'>无可显示条目</div>";
+}
+resultDiv.innerHTML = html;
+const actionButtonsEl = document.getElementById("actionButtons");
+if (actionButtonsEl) actionButtonsEl.style.display = window.latestResult && window.latestResult.length ? "flex" : "none";
 }
 const EXIST_ID="dynamic-table-style";
 let styleEl=document.getElementById(EXIST_ID);
 if(!styleEl){styleEl=document.createElement("style");styleEl.id=EXIST_ID;document.head.appendChild(styleEl)}
 styleEl.innerHTML="#result table{table-layout:fixed}#result table tr{height:30px}#result table td{height:30px;line-height:30px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 6px;vertical-align:middle}@media screen and (max-width:768px){#result table tr{height:50px}#result table td{height:50px;line-height:normal;white-space:normal;padding:6px 6px;vertical-align:middle}#result table td .multi-wrap{display:flex;align-items:center;height:100%}#result table td .multi-wrap .multi-line{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;line-height:20px;max-height:60px;white-space:normal;overflow-wrap:anywhere;word-break:break-word}}";
 function renderCalcSection(num){
-  const calcSection=document.getElementById("calcSection");
-  const needCoin=document.getElementById("needCoin");
-  const dealEl=document.getElementById("dealPrice");
-  const afterDealEl=document.getElementById("afterDealPrice");
-  const profitEl=document.getElementById("profitPrice");
-  const transferEl=document.getElementById("transferResult");
-  const pf=document.getElementById("platformFee");
-  const per=document.getElementById("personalFee");
-  const generateBtn=document.getElementById("generateImgBtn");
-  if(needCoin){needCoin.style.display="block";needCoin.innerText=`所需书币：${num}`}
-  const calc=()=>{
-    const dealValue=Math.round(num*0.1*100)/100;
-    dealEl.innerText=dealValue.toFixed(2);
-    const afterDealValue=pf&&pf.checked?Math.round(dealValue*(1-0.006)*100)/100:dealValue;
-    afterDealEl.innerText=afterDealValue.toFixed(2);
-    const profitValue=per&&per.checked?Math.round(dealValue*0.1*100)/100:0;
-    profitEl.innerText=profitValue.toFixed(2);
-    const transferValue=Math.round((afterDealValue-profitValue)*100)/100;
-    transferEl.innerText=transferValue.toFixed(2);
-  };
-  pf&&pf.addEventListener('change',calc);
-  per&&per.addEventListener('change',calc);
-  calc();
-  if(calcSection)calcSection.style.display="flex";
-  const actionButtonsEl=document.getElementById("actionButtons");
-  if(actionButtonsEl)actionButtonsEl.style.display="flex";
-  calcSection.style.display="flex";
-  if(generateBtn){generateBtn.style.display="inline-block"}
+const calcSection=document.getElementById("calcSection");
+const needCoin=document.getElementById("needCoin");
+const dealEl=document.getElementById("dealPrice");
+const afterDealEl=document.getElementById("afterDealPrice");
+const profitEl=document.getElementById("profitPrice");
+const transferEl=document.getElementById("transferResult");
+const pf=document.getElementById("platformFee");
+const per=document.getElementById("personalFee");
+const generateBtn=document.getElementById("generateImgBtn");
+if(needCoin){needCoin.style.display="block";needCoin.innerText=`所需书币：${num}`}
+const calc=()=>{
+const dealValue=Math.round(num*0.1*100)/100;
+dealEl.innerText=dealValue.toFixed(2);
+const afterDealValue=pf&&pf.checked?Math.round(dealValue*(1-0.006)*100)/100:dealValue;
+afterDealEl.innerText=afterDealValue.toFixed(2);
+const profitValue=per&&per.checked?Math.round(dealValue*0.1*100)/100:0;
+profitEl.innerText=profitValue.toFixed(2);
+const transferValue=Math.round((afterDealValue-profitValue)*100)/100;
+transferEl.innerText=transferValue.toFixed(2);
+};
+pf&&pf.addEventListener('change',calc);
+per&&per.addEventListener('change',calc);
+calc();
+if(calcSection)calcSection.style.display="flex";
+const actionButtonsEl=document.getElementById("actionButtons");
+if(actionButtonsEl)actionButtonsEl.style.display="flex";
+calcSection.style.display="flex";
+if(generateBtn){generateBtn.style.display="inline-block"}
 }
 async function generateResultImage(){
-  const captureArea=document.getElementById("captureArea");
-  if(!captureArea){showPopup("无查询结果可截图");return}
-  const wrapper=document.createElement('div');
-  wrapper.style.width='600px';wrapper.style.padding='12px';wrapper.style.background='#fff';wrapper.style.position='absolute';wrapper.style.left='-9999px';wrapper.style.boxSizing='border-box';wrapper.style.fontFamily='Arial, sans-serif';wrapper.style.fontSize='14px';
-  const clone=captureArea.cloneNode(true);clone.style.width='100%';wrapper.appendChild(clone);document.body.appendChild(wrapper);
-  const canvas=await html2canvas(wrapper,{backgroundColor:null,scale:2});
-  const dataUrl=canvas.toDataURL('image/png');document.body.removeChild(wrapper);
-  const imgEl=document.getElementById("generatedImg");
-  imgEl.src=dataUrl;imgEl.style.width='100%';imgEl.style.height='auto';imgEl.style.maxWidth='600px';imgEl.style.borderRadius='6px';imgEl.style.boxShadow='0 0 8px rgba(0,0,0,0.3)';
-  const tipEl=document.getElementById("imgTip");
-  if(/Android|iPhone/i.test(navigator.userAgent)){tipEl.innerText="复制失败时可长按图片复制或保存"}else{tipEl.innerText="复制失败时可右键单击图片复制或保存"}
-  const popup=document.getElementById("imgPopup");
-  popup.style.display="flex";popup.style.position="fixed";popup.style.top="0";popup.style.left="0";popup.style.width="100%";popup.style.height="100%";popup.style.background="rgba(0,0,0,0.5)";popup.style.justifyContent="center";popup.style.alignItems="center";popup.style.padding="20px";popup.style.boxSizing="border-box";popup.style.overflow="auto";popup.style.zIndex="9999";
-  popup.onclick=function(e){if(e.target===popup){popup.style.display="none"}};
+const captureArea=document.getElementById("captureArea");
+if(!captureArea){showPopup("无查询结果可截图");return}
+const wrapper=document.createElement('div');
+wrapper.style.width='600px';wrapper.style.padding='12px';wrapper.style.background='#fff';wrapper.style.position='absolute';wrapper.style.left='-9999px';wrapper.style.boxSizing='border-box';wrapper.style.fontFamily='Arial, sans-serif';wrapper.style.fontSize='14px';
+const clone=captureArea.cloneNode(true);clone.style.width='100%';wrapper.appendChild(clone);document.body.appendChild(wrapper);
+const canvas=await html2canvas(wrapper,{backgroundColor:null,scale:2});
+const dataUrl=canvas.toDataURL('image/png');document.body.removeChild(wrapper);
+const imgEl=document.getElementById("generatedImg");
+imgEl.src=dataUrl;imgEl.style.width='100%';imgEl.style.height='auto';imgEl.style.maxWidth='600px';imgEl.style.borderRadius='6px';imgEl.style.boxShadow='0 0 8px rgba(0,0,0,0.3)';
+const tipEl=document.getElementById("imgTip");
+if(/Android|iPhone/i.test(navigator.userAgent)){tipEl.innerText="复制失败时可长按图片复制或保存"}else{tipEl.innerText="复制失败时可右键单击图片复制或保存"}
+const popup=document.getElementById("imgPopup");
+popup.style.display="flex";popup.style.position="fixed";popup.style.top="0";popup.style.left="0";popup.style.width="100%";popup.style.height="100%";popup.style.background="rgba(0,0,0,0.5)";popup.style.justifyContent="center";popup.style.alignItems="center";popup.style.padding="20px";popup.style.boxSizing="border-box";popup.style.overflow="auto";popup.style.zIndex="9999";
+popup.onclick=function(e){if(e.target===popup){popup.style.display="none"}};
 }
 async function copyGeneratedImg(){
-  const img=document.getElementById("generatedImg");
-  if(!img.src)return;
-  const wrapper=document.createElement('div');
-  wrapper.style.width='600px';wrapper.style.padding='12px';wrapper.style.background='#fff';wrapper.style.position='absolute';wrapper.style.left='-9999px';wrapper.style.boxSizing='border-box';wrapper.style.fontFamily='Arial, sans-serif';wrapper.style.fontSize='14px';
-  const clone=document.getElementById("captureArea").cloneNode(true);
-  clone.style.width='100%';wrapper.appendChild(clone);document.body.appendChild(wrapper);
-  const canvas=await html2canvas(wrapper,{backgroundColor:null,scale:2});
-  const blob=await new Promise(resolve=>canvas.toBlob(resolve));document.body.removeChild(wrapper);
-  try{await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);showPopup("✅ 已复制图片，可直接粘贴到微信");  
-  }catch(err){showPopup("❌ 复制失败，请手动复制图片");console.error(err);}}
+const img=document.getElementById("generatedImg");
+if(!img.src)return;
+const wrapper=document.createElement('div');
+wrapper.style.width='600px';wrapper.style.padding='12px';wrapper.style.background='#fff';wrapper.style.position='absolute';wrapper.style.left='-9999px';wrapper.style.boxSizing='border-box';wrapper.style.fontFamily='Arial, sans-serif';wrapper.style.fontSize='14px';
+const clone=document.getElementById("captureArea").cloneNode(true);
+clone.style.width='100%';wrapper.appendChild(clone);document.body.appendChild(wrapper);
+const canvas=await html2canvas(wrapper,{backgroundColor:null,scale:2});
+const blob=await new Promise(resolve=>canvas.toBlob(resolve));document.body.removeChild(wrapper);
+try{await navigator.clipboard.write([new ClipboardItem({"image/png": blob})]);showPopup("✅ 已复制图片，可直接粘贴到微信");  
+}catch(err){showPopup("❌ 复制失败，请手动复制图片");console.error(err);}}
 function saveGeneratedImg(){const img=document.getElementById("generatedImg");if(!img.src)return showPopup("无图片可保存");const link=document.createElement("a");link.href=img.src;link.download="查询结果.png";link.click()}
 document.getElementById("generateImgBtn")?.addEventListener("click",generateResultImage);
 document.getElementById("copyImgBtn")?.addEventListener("click",copyGeneratedImg);
@@ -420,5 +611,3 @@ document.getElementById("saveImgBtn")?.addEventListener("click",saveGeneratedImg
 </script>
 </body>
 </html>
-
-
