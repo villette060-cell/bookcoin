@@ -291,7 +291,7 @@ justify-content: center;
 <input type="checkbox" id="platformFee"> 6‰交易平台服务费
 </label>
 <label style="display:flex; align-items:center; gap:6px;">
-<input type="checkbox" id="personalFee"> 10%个人手续费
+<input type="checkbox" id="personalFee"> 20%个人手续费
 </label>
 </div>
 </div>
@@ -911,10 +911,10 @@ const dealValue = Math.round(num * 0.1 * 100) / 100;
 dealEl.innerText = dealValue.toFixed(2);
 const afterDealValue = pf && pf.checked ? Math.round(dealValue * (1 - 0.006) * 100) / 100 : dealValue;
 afterDealEl.innerText = afterDealValue.toFixed(2);
-const profitValue = per && per.checked ? Math.round(dealValue * 0.1 * 100) / 100 : 0;
-profitEl.innerText = profitValue.toFixed(2);
-const transferValue = Math.round((afterDealValue - profitValue) * 100) / 100;
+const transferValue = per && per.checked ? Math.round(dealValue * 0.8 * 100) / 100 : afterDealValue;
 transferEl.innerText = transferValue.toFixed(2);
+const profitValue = per && per.checked ? Math.round((afterDealValue - transferValue) * 100) / 100 : 0;
+profitEl.innerText = profitValue.toFixed(2);
 };pf && pf.addEventListener('change', calc);
 per && per.addEventListener('change', calc);
 calc();if (calcSection) calcSection.style.display = "flex";
@@ -1022,3 +1022,4 @@ document.getElementById("copyImgBtn") ?.addEventListener("click", copyGeneratedI
 document.getElementById("saveImgBtn") ?.addEventListener("click", saveGeneratedImg);
 </script>
 </body></html>
+
