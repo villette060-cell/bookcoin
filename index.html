@@ -2,7 +2,7 @@
 <html lang="zh"><head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>书币查询工具v2.7</title>
+<title>书币查询工具v2.8</title>
 <style>
 #passwordArea {
 position: fixed;
@@ -254,9 +254,211 @@ display: -webkit-box;
 justify-content: center;
 }
 }
+.page-container {
+display: none;
+}
+.page-container.active {
+display: block;
+}
+#groupSortPage.active {
+display: flex;
+}
+#groupSortPage {
+padding: 10px;
+}
+#groupSortTableWrapper {
+overflow-x: auto;
+overflow-y: auto;
+margin-bottom: 20px;
+}
+#groupSortPage {
+flex-direction: column;
+height: calc(100vh - 40px);
+padding: 0 20px 20px 20px;
+box-sizing: border-box;
+}
+#groupSortPage .page-header,
+#groupSortPage #groupSortTopBar {
+flex-shrink: 0;
+}
+#groupSortPage #groupSortTableWrapper {
+flex: 1;
+overflow-y: auto;
+overflow-x: auto;
+min-height: 0;
+margin-top: 10px;
+}
+#groupSortTable thead th {
+position: sticky;
+top: 0;
+z-index: 10;
+background-color: white !important;
+}
+#groupSortTable {
+border-collapse: collapse;
+background: white;
+table-layout: fixed;
+}
+#groupSortTable th,
+#groupSortTable td {
+border: 1px solid #ccc;
+padding: 0;
+text-align: center;
+font-size: 12px;
+width: 120px;
+min-width: 120px;
+max-width: 120px;
+height: 20px;
+min-height: 20px;
+max-height: 20px;
+line-height: 20px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+box-sizing: border-box;
+}
+#groupSortTable th {
+background-color: white;
+font-weight: bold;
+height: 25px;
+min-height: 25px;
+max-height: 25px;
+line-height: 25px;
+font-size: 13px;
+}
+#groupSortTable .group-header {
+background-color: #e0e0e0;
+font-weight: bold;
+}
+#groupSortTable .group-header[colspan] {
+text-align: center;
+}
+.page-header {
+display: flex;
+justify-content: center;
+align-items: center;
+margin-bottom: 24px;
+padding: 0 20px;
+position: relative;
+min-height: 50px;
+}
+.page-header h2 {
+margin: 0;
+text-align: left;
+}
+.page-tabs {
+display: flex;
+gap: 0;
+justify-content: center;
+align-items: center;
+background: transparent;
+padding: 0;
+border-radius: 0;
+box-shadow: none;
+}
+.page-tab {
+padding: 12px 32px;
+cursor: pointer;
+color: #666;
+font-size: 18px;
+font-weight: 500;
+border: none;
+background: transparent;
+border-radius: 0;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
+outline: none;
+}
+.page-tab:hover {
+background: transparent;
+color: #000;
+}
+.page-tab.active {
+color: #000;
+background: #f0f0f0;
+font-weight: 600;
+}
+.page-tab.active::after {
+content: '';
+position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+height: 3px;
+background-color: #0078d7;
+}
+@media (max-width: 768px) {
+.page-tab {
+padding: 10px 20px;
+font-size: 16px;
+}
+.page-header {
+padding: 0 10px;
+}
+}
+#main {
+padding: 0;
+min-height: calc(100vh - 40px);
+}
+#queryPage {
+padding: 0 20px 20px 20px;
+}
+@media (max-width: 768px) {
+#queryPage {
+padding: 0 10px 10px 10px;
+}
+}
+#groupSortPage {
+padding: 0 20px 20px 20px;
+min-height: calc(100vh - 40px);
+box-sizing: border-box;
+}
+@media (max-width: 768px) {
+#groupSortPage {
+padding: 0 10px 10px 10px;
+}
+#groupSortTopBar {
+flex-direction: column;
+align-items: flex-start;
+gap: 12px;
+}
+#groupSortTopBar button {
+align-self: flex-end;
+}
+}
+#groupSortLegend {
+font-size: 14px;
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+gap: 16px;
+}
+#groupSortLegend .legend-item {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 4px 8px;
+border-radius: 4px;
+background: #f9f9f9;
+}
+#groupSortLegend .legend-color {
+display: inline-block;
+width: 16px;
+height: 16px;
+vertical-align: middle;
+margin-right: 4px;
+border: 1px solid #ccc;
+}
+#groupSortGenerateBtn {
+position: fixed;
+bottom: 70px;
+right: 20px;
+z-index: 99;
+}
 </style>
 </head><body>
 <div id="passwordArea">
+<h1 style="margin-bottom:20px;font-size:24px;">📖 书币查询工具</h1>
 <h2>请输入密码</h2>
 <div id="pwdInputWrapper">
 <input type="password" id="pwdInput" placeholder="请输入密码">
@@ -265,7 +467,14 @@ justify-content: center;
 <button id="pwdConfirm" onclick="checkPwd()">确定</button>
 <p id="pwdMsg" style="color:red;"></p>
 </div><div id="main">
-<h2>📖 书币查询工具</h2><div style="text-align:center; margin-bottom:10px;">
+<div id="queryPage" class="page-container active">
+<div class="page-header">
+<div class="page-tabs">
+<button class="page-tab active" onclick="switchPage('query')">查询页</button>
+<button class="page-tab" onclick="switchPage('groupSort')">分组排序表</button>
+</div>
+</div>
+<div style="text-align:center; margin-bottom:10px;">
 <button id="refreshBtn" onclick="loadCacheTable()">加载缓存表格</button>
 <button id="loadCacheBtn" onclick="clearInputData()">清空表格内容</button>
 <div id="status" class="statusText">
@@ -297,9 +506,26 @@ justify-content: center;
 </div>
 </div>
 <button id="generateImgBtn" style="display:none;">生成查询结果图</button>
+</div>
+<div id="groupSortPage" class="page-container">
+<div class="page-header">
+<div class="page-tabs">
+<button class="page-tab" onclick="switchPage('query')">查询页</button>
+<button class="page-tab active" onclick="switchPage('groupSort')">分组排序表</button>
+</div>
+</div>
+<div id="groupSortTopBar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:12px 0;border-bottom:1px solid #e0e0e0;">
+<div id="groupSortLegend"></div>
+<button id="groupSortGenerateBtn" style="display:none;padding:8px 20px;font-size:14px;">生成图片</button>
+</div>
+<div id="groupSortTableWrapper">
+<table id="groupSortTable"></table>
+</div>
+<div id="groupSortCaptureArea" style="display:none;"></div>
+</div>
 <div id="imgPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;flex-direction:column;">
-<div style="background:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;align-items:center;max-width:90%;">
-<img id="generatedImg" src="" alt="查询结果" style="width:500px;height:auto;margin-bottom:12px;border:1px solid #ccc;">
+<div style="background:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;align-items:center;max-width:90%;max-height:90%;overflow:auto;">
+<img id="generatedImg" src="" alt="查询结果" style="max-width:100%;height:auto;margin-bottom:12px;border:1px solid #ccc;">
 <div id="imgTip" style="margin-bottom:12px;font-size:14px;color:#555;text-align:center;">复制图片 / 保存图片</div>
 <div style="display:flex;gap:12px;">
 <button id="copyImgBtn" class="imgBtn">复制图片</button>
@@ -402,6 +628,9 @@ const cache = localStorage.getItem(CACHE_KEY);
 if (cache) {
 container.innerHTML = cache;
 placeholderText.style.display = 'none';
+if (document.getElementById("groupSortPage").classList.contains("active")) {
+setTimeout(() => updateGroupSortTable(), 100);
+}
 } else {
 showPopup("无缓存表格可用，请手动粘贴表格内容");
 }
@@ -410,6 +639,16 @@ const container = document.getElementById("inputData");
 container.innerHTML = "";
 placeholderText.style.display = 'block';
 document.getElementById("statusMsg").innerText = "";
+if (document.getElementById("groupSortPage").classList.contains("active")) {
+const cache = localStorage.getItem(CACHE_KEY);
+if (cache) {
+container.innerHTML = cache;
+placeholderText.style.display = 'none';
+setTimeout(() => updateGroupSortTable(), 100);
+} else {
+updateGroupSortTable();
+}
+}
 }
 function classify(item) {
 if (item.是否暂停) return '弃置组';
@@ -438,7 +677,7 @@ window.deletedStack = [];
 window.supplementStack = [];
 window.initialLatestLength = null;window.currentNum = inputVal;
 const num = window.currentNum;const table = container.querySelector('table');
-let submitColIdx = 6;
+let submitColIdx = 8;
 try {
 let headerRow = table.querySelector('thead tr');
 if (!headerRow) headerRow = table.rows[0];
@@ -446,6 +685,7 @@ if (headerRow) {
 const heads = Array.from(headerRow.cells || []).map(h => h.innerText.trim());
 for (let i = 0; i < heads.length; i++) {
 if (/提交时间|更新时间|提交日期/.test(heads[i])) {
+if (i >= 2 && i <= 7) continue;
 submitColIdx = i;
 break;
 }
@@ -454,6 +694,9 @@ break;
 } catch (e) {  }const rows = Array.from(table.rows).slice(1);function parseAccounts(row) {
 const cells = row.cells;
 if (!cells || cells.length === 0) return [];
+if (cells.length < 9) {
+console.warn('表格列数不足，期望至少9列（信用分、群昵称、账号1-6、提交时间），实际:', cells.length);
+}
 const rawCredit = (cells[0] && cells[0].innerText) ? cells[0].innerText.trim() : '';
 const creditForLogic = parseFloat(rawCredit) || 10;
 const name = (cells[1] && cells[1].innerText) ? cells[1].innerText.trim() : '';
@@ -461,14 +704,22 @@ const accounts = [
 cells[2] ? cells[2].innerText.trim() : '',
 cells[3] ? cells[3].innerText.trim() : '',
 cells[4] ? cells[4].innerText.trim() : '',
-cells[5] ? cells[5].innerText.trim() : ''
+cells[5] ? cells[5].innerText.trim() : '',
+cells[6] ? cells[6].innerText.trim() : '',
+cells[7] ? cells[7].innerText.trim() : ''
 ];
 const submit = (cells[submitColIdx] && cells[submitColIdx].innerText) ? cells[submitColIdx].innerText.trim() : '';
 const updateStr = submit;const list = [];
 accounts.forEach((text, k) => {
-if (!text) return;
+if (!text) {
+if (k >= 4) console.log(`账号${k+1}为空，跳过`);
+return;
+}
 const valMatch = text.replace(/,/g, '').match(/\d+(\.\d+)?/);
 const val = valMatch ? parseFloat(valMatch[0]) : null;
+if (val === null) {
+if (k >= 4) console.log(`账号${k+1}无法解析数值，文本:`, text);
+}
 if (val !== null) {
 const updateTs = parseTimeToTs(updateStr) || parseTimeToTs(submit) || null;
 list.push({
@@ -951,9 +1202,9 @@ const dataUrl = canvas.toDataURL('image/png');
 document.body.removeChild(wrapper);
 const imgEl = document.getElementById("generatedImg");
 imgEl.src = dataUrl;
-imgEl.style.width = '100%';
-imgEl.style.height = 'auto';
 imgEl.style.maxWidth = '500px';
+imgEl.style.width = 'auto';
+imgEl.style.height = 'auto';
 imgEl.style.borderRadius = '6px';
 imgEl.style.boxShadow = '0 0 8px rgba(0,0,0,0.3)';
 const tipEl = document.getElementById("imgTip");
@@ -977,34 +1228,28 @@ popup.style.boxSizing = "border-box";
 popup.style.overflow = "auto";
 popup.style.zIndex = "9999";
 popup.onclick = function(e) {
-if (e.target === popup) {
+if (e.target === popup || e.target.classList.contains('popup-background')) {
 popup.style.display = "none";
 }
 };
+const popupContent = popup.querySelector('div');
+if (popupContent) {
+popupContent.onclick = function(e) {
+e.stopPropagation();
+};
+}
 }
 async function copyGeneratedImg() {
 const img = document.getElementById("generatedImg");
-if (!img.src) return;const wrapper = document.createElement('div');
-wrapper.style.width = '500px';
-wrapper.style.padding = '12px';
-wrapper.style.background = '#fff';
-wrapper.style.position = 'absolute';
-wrapper.style.left = '-9999px';
-wrapper.style.boxSizing = 'border-box';
-wrapper.style.fontFamily = 'Arial, sans-serif';
-wrapper.style.fontSize = '14px';const clone = document.getElementById("captureArea").cloneNode(true);
-clone.style.width = '100%';
-wrapper.appendChild(clone);
-document.body.appendChild(wrapper);const canvas = await html2canvas(wrapper, {
-backgroundColor: null,
-scale: 2
-});
-const blob = await new Promise(resolve => canvas.toBlob(resolve));
-document.body.removeChild(wrapper);try {
+if (!img.src) return;
+try {
+const response = await fetch(img.src);
+const blob = await response.blob();
 await navigator.clipboard.write([new ClipboardItem({
 "image/png": blob
 })]);
-showPopup("已复制图片，可直接粘贴到微信");} catch (err) {
+showPopup("已复制图片，可直接粘贴到微信");
+} catch (err) {
 showPopup("复制失败，请手动复制图片");
 console.error(err);
 }
@@ -1014,12 +1259,338 @@ const img = document.getElementById("generatedImg");
 if (!img.src) return showPopup("无图片可保存");
 const link = document.createElement("a");
 link.href = img.src;
-link.download = "查询结果.png";
+const isGroupSort = window.currentGroupSortImg === img.src;
+link.download = isGroupSort ? "分组排序表.png" : "查询结果.png";
 link.click();
 }
 document.getElementById("generateImgBtn") ?.addEventListener("click", generateResultImage);
 document.getElementById("copyImgBtn") ?.addEventListener("click", copyGeneratedImg);
 document.getElementById("saveImgBtn") ?.addEventListener("click", saveGeneratedImg);
+function switchPage(page) {
+const queryPage = document.getElementById("queryPage");
+const groupSortPage = document.getElementById("groupSortPage");
+const allTabs = document.querySelectorAll(".page-tab");
+if (page === 'query') {
+queryPage.classList.add("active");
+groupSortPage.classList.remove("active");
+allTabs.forEach((tab, idx) => {
+if (idx === 0) tab.classList.add("active");
+else tab.classList.remove("active");
+});
+} else {
+queryPage.classList.remove("active");
+groupSortPage.classList.add("active");
+allTabs.forEach((tab, idx) => {
+if (idx === 1) tab.classList.add("active");
+else tab.classList.remove("active");
+});
+updateGroupSortTable();
+}
+}
+function getGroupIndex(num) {
+if (num >= 100) return 1;
+if (num >= 80) return 2;
+if (num >= 50) return 3;
+if (num >= 30) return 4;
+return 5;
+}
+function parseAllAccounts() {
+const container = document.getElementById("inputData");
+const table = container.querySelector('table');
+if (!table) return [];
+let submitColIdx = 8;
+try {
+let headerRow = table.querySelector('thead tr');
+if (!headerRow) headerRow = table.rows[0];
+if (headerRow) {
+const heads = Array.from(headerRow.cells || []).map(h => h.innerText.trim());
+for (let i = 0; i < heads.length; i++) {
+if (/提交时间|更新时间|提交日期/.test(heads[i])) {
+if (i >= 2 && i <= 7) continue;
+submitColIdx = i;
+break;
+}
+}
+}
+} catch (e) {}
+const rows = Array.from(table.rows).slice(1);
+const allItems = [];
+rows.forEach(row => {
+const cells = row.cells;
+if (!cells || cells.length === 0) return;
+const rawCredit = (cells[0] && cells[0].innerText) ? cells[0].innerText.trim() : '';
+const creditForLogic = parseFloat(rawCredit) || 10;
+const name = (cells[1] && cells[1].innerText) ? cells[1].innerText.trim() : '';
+const accounts = [
+cells[2] ? cells[2].innerText.trim() : '',
+cells[3] ? cells[3].innerText.trim() : '',
+cells[4] ? cells[4].innerText.trim() : '',
+cells[5] ? cells[5].innerText.trim() : '',
+cells[6] ? cells[6].innerText.trim() : '',
+cells[7] ? cells[7].innerText.trim() : ''
+];
+const submit = (cells[submitColIdx] && cells[submitColIdx].innerText) ? cells[submitColIdx].innerText.trim() : '';
+accounts.forEach((text, k) => {
+if (!text) return;
+const valMatch = text.replace(/,/g, '').match(/\d+(\.\d+)?/);
+const val = valMatch ? parseFloat(valMatch[0]) : null;
+if (val !== null) {
+const updateTs = parseTimeToTs(submit) || null;
+allItems.push({
+群昵称: name,
+账号: `账号${k+1}`,
+书币: text,
+数值: val,
+信用分: rawCredit === "" ? 10 : (parseFloat(rawCredit) || 10),
+信用分逻辑: creditForLogic,
+是否过期: /过期|到期/.test(text),
+是否攒: /攒/.test(text),
+是否暂停: /暂停接单|预定|预订/.test(text),
+是否不接急单: /不接急单/.test(text),
+提交时间: submit,
+更新时间_ts: updateTs
+});
+}
+});
+});
+return allItems;
+}
+function updateGroupSortTable() {
+const allItems = parseAllAccounts();
+const groups = [[], [], [], [], [], [], []];
+allItems.forEach(item => {
+let groupIdx;
+const isReserve = item.是否暂停 && (item.书币.includes("预定") || item.书币.includes("预订"));
+if (item.是否暂停 && !isReserve) {
+groupIdx = 6;
+} else {
+groupIdx = getGroupIndex(item.数值);
+}
+if (groupIdx >= 0 && groupIdx < groups.length) {
+groups[groupIdx].push(item);
+}
+});
+const groupOrder = ['正常组', '低速组', '攒币组', '低分组', '弃置组'];
+for (let i = 1; i <= 6; i++) {
+if (groups[i].length > 0) {
+groups[i].sort((a, b) => {
+if (a.数值 !== b.数值) return b.数值 - a.数值;
+const aIsReserve = a.是否暂停 && (a.书币.includes("预定") || a.书币.includes("预订"));
+const bIsReserve = b.是否暂停 && (b.书币.includes("预定") || b.书币.includes("预订"));
+if (aIsReserve && !bIsReserve) return 1;
+if (!aIsReserve && bIsReserve) return -1;
+if (!aIsReserve && !bIsReserve) {
+const aGroup = classify(a);
+const bGroup = classify(b);
+const aIdx = groupOrder.indexOf(aGroup);
+const bIdx = groupOrder.indexOf(bGroup);
+if (aIdx !== bIdx && aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+}
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+});
+}
+}
+const headers = ["x>=100", "80<=x<100", "50<=x<80", "30<=x<50", "x<30", "暂停接单"];
+const table = document.getElementById("groupSortTable");
+let html = "<thead><tr>";
+for (let i = 0; i < 6; i++) {
+html += `<th colspan="2" class="group-header">${headers[i]}</th>`;
+}
+html += "</tr></thead><tbody>";
+const maxRows = Math.max(...groups.slice(1).map(g => g.length), 0);
+for (let r = 0; r < maxRows; r++) {
+html += "<tr>";
+for (let g = 1; g <= 6; g++) {
+if (r < groups[g].length) {
+const item = groups[g][r];
+html += `<td style="${getCellStyle(item, g)}">${item.群昵称}</td>`;
+html += `<td style="${getCellStyle(item, g)}">${item.书币}</td>`;
+} else {
+html += "<td></td><td></td>";
+}
+}
+html += "</tr>";
+}
+html += "</tbody>";
+if (maxRows === 0) {
+html = "<tbody><tr><td colspan='12' style='text-align:center;padding:20px;color:#999;'>暂无数据，请先在查询页粘贴表格</td></tr></tbody>";
+}
+table.innerHTML = html;
+renderGroupSortLegend();
+const btn = document.getElementById("groupSortGenerateBtn");
+if (allItems.length > 0) {
+btn.style.display = "inline-block";
+} else {
+btn.style.display = "none";
+}
+}
+function getCellStyle(item, groupId) {
+let style = "";
+const isReserve = item.是否暂停 && (item.书币.includes("预定") || item.书币.includes("预订"));
+if (item.是否过期) {
+style += "color:#ff0000;font-weight:bold;";
+} else if (isReserve) {
+style += "background-color:#e6e6e6;color:#646464;";
+} else if (item.是否暂停) {
+style += "background-color:#e6e6e6;color:#646464;";
+} else {
+const group = classify(item);
+switch (group) {
+case '正常组': style += "color:#333;font-weight:bold;"; break;
+case '低速组': style += "color:#336699;"; break;
+case '攒币组': style += "color:#969696;"; break;
+case '低分组': style += "color:#aaa;"; break;
+case '弃置组': style += "color:#aaa;"; break;
+}
+const num = item.数值;
+if (num >= 100) {
+style += "background-color:rgb(255, 150, 150);";
+} else if (num >= 80) {
+style += "background-color:rgb(255, 200, 150);";
+} else if (num >= 50) {
+style += "background-color:rgb(255, 255, 200);";
+} else if (num >= 30) {
+style += "background-color:rgb(200, 255, 200);";
+} else {
+style += "background-color:rgb(200, 220, 255);";
+}
+}
+return style;
+}
+function renderGroupSortLegend() {
+const legend = document.getElementById("groupSortLegend");
+legend.innerHTML = `
+<div class="legend-item"><span style="color:#333;font-weight:bold;">正常组</span></div>
+<div class="legend-item"><span style="color:#336699;">低速组</span></div>
+<div class="legend-item"><span style="color:#969696;">攒币组</span></div>
+<div class="legend-item"><span style="color:#aaa;">低分组</span></div>
+<div class="legend-item"><span style="color:#ff0000;font-weight:bold;">过期/到期</span></div>
+`;
+}
+async function generateGroupSortImage() {
+const table = document.getElementById("groupSortTable");
+const legend = document.getElementById("groupSortLegend");
+if (!table || table.rows.length === 0) {
+showPopup("无数据可截图");
+return;
+}
+const wrapper = document.createElement('div');
+wrapper.style.width = '1200px';
+wrapper.style.padding = '12px';
+wrapper.style.background = '#fff';
+wrapper.style.position = 'absolute';
+wrapper.style.left = '-9999px';
+wrapper.style.boxSizing = 'border-box';
+wrapper.style.fontFamily = 'Arial, sans-serif';
+wrapper.style.fontSize = '12px';
+const title = document.createElement('h2');
+title.textContent = '📊 分组排序表';
+title.style.marginTop = '0';
+title.style.marginBottom = '10px';
+wrapper.appendChild(title);
+const clone = table.cloneNode(true);
+clone.style.width = '100%';
+clone.style.borderCollapse = 'collapse';
+wrapper.appendChild(clone);
+const legendClone = legend.cloneNode(true);
+legendClone.style.marginTop = '20px';
+wrapper.appendChild(legendClone);
+document.body.appendChild(wrapper);
+const canvas = await html2canvas(wrapper, {
+backgroundColor: '#fff',
+scale: 2
+});
+const dataUrl = canvas.toDataURL('image/png');
+document.body.removeChild(wrapper);
+const imgEl = document.getElementById("generatedImg");
+imgEl.src = dataUrl;
+imgEl.style.maxWidth = '1200px';
+imgEl.style.width = 'auto';
+imgEl.style.height = 'auto';
+imgEl.style.borderRadius = '6px';
+imgEl.style.boxShadow = '0 0 8px rgba(0,0,0,0.3)';
+const tipEl = document.getElementById("imgTip");
+if (/Android|iPhone/i.test(navigator.userAgent)) {
+tipEl.innerText = "复制失败时可长按图片复制或保存";
+} else {
+tipEl.innerText = "复制失败时可右键单击图片复制或保存";
+}
+const popup = document.getElementById("imgPopup");
+popup.style.display = "flex";
+window.currentGroupSortImg = dataUrl;
+popup.onclick = function(e) {
+if (e.target === popup || e.target.classList.contains('popup-background')) {
+popup.style.display = "none";
+}
+};
+const popupContent = popup.querySelector('div');
+if (popupContent) {
+popupContent.onclick = function(e) {
+e.stopPropagation();
+};
+}
+}
+async function copyGroupSortImg() {
+const table = document.getElementById("groupSortTable");
+const legend = document.getElementById("groupSortLegend");
+if (!table || table.rows.length === 0) return;
+const wrapper = document.createElement('div');
+wrapper.style.width = '1200px';
+wrapper.style.padding = '12px';
+wrapper.style.background = '#fff';
+wrapper.style.position = 'absolute';
+wrapper.style.left = '-9999px';
+wrapper.style.boxSizing = 'border-box';
+wrapper.style.fontFamily = 'Arial, sans-serif';
+wrapper.style.fontSize = '12px';
+const title = document.createElement('h2');
+title.textContent = '📊 分组排序表';
+title.style.marginTop = '0';
+title.style.marginBottom = '10px';
+wrapper.appendChild(title);
+const clone = table.cloneNode(true);
+clone.style.width = '100%';
+clone.style.borderCollapse = 'collapse';
+wrapper.appendChild(clone);
+const legendClone = legend.cloneNode(true);
+legendClone.style.marginTop = '20px';
+wrapper.appendChild(legendClone);
+document.body.appendChild(wrapper);
+const canvas = await html2canvas(wrapper, {
+backgroundColor: '#fff',
+scale: 2
+});
+const blob = await new Promise(resolve => canvas.toBlob(resolve));
+document.body.removeChild(wrapper);
+try {
+await navigator.clipboard.write([new ClipboardItem({
+"image/png": blob
+})]);
+showPopup("已复制图片，可直接粘贴到微信");
+} catch (err) {
+showPopup("复制失败，请手动复制图片");
+console.error(err);
+}
+}
+function saveGroupSortImg() {
+const img = document.getElementById("generatedImg");
+if (!img.src) return showPopup("无图片可保存");
+const link = document.createElement("a");
+link.href = img.src;
+link.download = "分组排序表.png";
+link.click();
+}
+document.getElementById("groupSortGenerateBtn")?.addEventListener("click", generateGroupSortImage);
+const inputDataEl = document.getElementById('inputData');
+let inputTimer = null;
+inputDataEl.addEventListener('input', () => {
+if (inputTimer) clearTimeout(inputTimer);
+inputTimer = setTimeout(() => {
+if (document.getElementById("groupSortPage").classList.contains("active")) {
+updateGroupSortTable();
+}
+}, 300);
+});
 </script>
 </body></html>
 
