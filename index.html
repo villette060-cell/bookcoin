@@ -2,7 +2,7 @@
 <html lang="zh"><head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>书币查询工具v2.8</title>
+<title>书币查询工具v3.0</title>
 <style>
 #passwordArea {
 position: fixed;
@@ -1460,11 +1460,10 @@ return style;
 function renderGroupSortLegend() {
 const legend = document.getElementById("groupSortLegend");
 legend.innerHTML = `
-<div class="legend-item"><span style="color:#333;font-weight:bold;">正常组</span></div>
-<div class="legend-item"><span style="color:#336699;">低速组</span></div>
-<div class="legend-item"><span style="color:#969696;">攒币组</span></div>
-<div class="legend-item"><span style="color:#aaa;">低分组</span></div>
-<div class="legend-item"><span style="color:#ff0000;font-weight:bold;">过期/到期</span></div>
+<div class="legend-item"><span style="color:#ff0000;font-weight:bold;">即将过期</span></div>
+<div class="legend-item"><span style="color:#336699;">不接急单</span></div>
+<div class="legend-item"><span style="color:#969696;">攒币中</span></div>
+<div class="legend-item"><span style="color:#aaa;">信用分低于8分</span></div>
 `;
 }
 async function generateGroupSortImage() {
@@ -1593,4 +1592,5 @@ updateGroupSortTable();
 });
 </script>
 </body></html>
+
 
