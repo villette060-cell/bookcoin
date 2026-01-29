@@ -1795,7 +1795,7 @@ console.error('Error creating balance chart:', e);
 }
 }, 200);
 const balanceStatsEl = document.getElementById("balanceStats");
-balanceStatsEl.innerHTML = `<div style="margin-top:10px;"><span style="color:#666;">低余额：</span><strong>${low}</strong> <span style="margin-left:15px;color:#666;">高余额：</span><strong>${high}</strong></div>`;
+balanceStatsEl.innerHTML = `<div style="margin-top:10px;"><span style="color:#666;">余额≤10：</span><strong>${low}</strong> <span style="margin-left:15px;color:#666;">余额≥120：</span><strong>${high}</strong></div>`;
 const timeLabels = ["今日内", "1天前", "2天及更早前"];
 const timeCounts = [0, 0, 0];
 filteredItems.forEach(item => {
@@ -1879,4 +1879,5 @@ document.getElementById("timeStats").innerHTML = timeStatsHtml;
 }
 </script>
 </body></html>
+
 
