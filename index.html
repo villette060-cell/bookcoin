@@ -2,7 +2,7 @@
 <html lang="zh"><head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>书币查询工具v3.0</title>
+<title>书币查询工具v3.1</title>
 <style>
 #passwordArea {
 position: fixed;
@@ -263,6 +263,9 @@ display: block;
 #groupSortPage.active {
 display: flex;
 }
+#overviewPage.active {
+display: block;
+}
 #groupSortPage {
 padding: 10px;
 }
@@ -287,17 +290,25 @@ overflow-y: auto;
 overflow-x: auto;
 min-height: 0;
 margin-top: 10px;
+width: 100%;
 }
-#groupSortTable thead th {
-position: sticky;
-top: 0;
-z-index: 10;
-background-color: white !important;
-}
+/* 分组排序表：表头固定 */
 #groupSortTable {
 border-collapse: collapse;
 background: white;
 table-layout: fixed;
+border: 1px solid #ccc;
+}
+#groupSortTable thead {
+position: sticky;
+top: 0;
+z-index: 10;
+background: white;
+}
+#groupSortTable thead th {
+background-color: white !important;
+border-top: 1px solid #ccc !important;
+border-bottom: 1px solid #ccc !important;
 }
 #groupSortTable th,
 #groupSortTable td {
@@ -395,6 +406,70 @@ font-size: 16px;
 .page-header {
 padding: 0 10px;
 }
+#groupSortTableWrapper {
+overflow-x: auto;
+overflow-y: auto;
+-webkit-overflow-scrolling: touch;
+}
+#groupSortTable th,
+#groupSortTable td {
+width: 90px;
+min-width: 90px;
+max-width: 90px;
+height: 15px;
+min-height: 15px;
+max-height: 15px;
+line-height: 15px;
+font-size: 10px;
+}
+#groupSortTable th {
+height: 20px;
+min-height: 20px;
+max-height: 20px;
+line-height: 20px;
+font-size: 11px;
+}
+#groupSortPage {
+padding: 0 10px 10px 10px;
+}
+#groupSortTopBar {
+flex-direction: column;
+align-items: flex-start;
+gap: 12px;
+padding: 10px 0;
+}
+#groupSortTopBar button {
+align-self: flex-end;
+}
+#groupSortLegend {
+font-size: 12px;
+}
+#groupSortLegend .legend-item {
+margin-right: 10px;
+margin-bottom: 3px;
+padding: 3px 6px;
+}
+#overviewContent {
+padding: 10px !important;
+}
+#overviewContent .overview-card {
+padding: 15px !important;
+}
+#overviewContent .overview-card > div:first-child {
+font-size: 12px !important;
+}
+#overviewContent {
+grid-template-columns: 1fr !important;
+grid-template-rows: auto !important;
+height: auto !important;
+}
+#overviewContent .overview-card {
+min-height: 250px;
+}
+#balanceChart, #timeChart {
+height: 200px !important;
+min-height: 200px !important;
+}
 }
 #main {
 padding: 0;
@@ -412,19 +487,6 @@ padding: 0 10px 10px 10px;
 padding: 0 20px 20px 20px;
 min-height: calc(100vh - 40px);
 box-sizing: border-box;
-}
-@media (max-width: 768px) {
-#groupSortPage {
-padding: 0 10px 10px 10px;
-}
-#groupSortTopBar {
-flex-direction: column;
-align-items: flex-start;
-gap: 12px;
-}
-#groupSortTopBar button {
-align-self: flex-end;
-}
 }
 #groupSortLegend {
 font-size: 14px;
@@ -470,8 +532,9 @@ z-index: 99;
 <div id="queryPage" class="page-container active">
 <div class="page-header">
 <div class="page-tabs">
-<button class="page-tab active" onclick="switchPage('query')">查询页</button>
-<button class="page-tab" onclick="switchPage('groupSort')">分组排序表</button>
+<button class="page-tab active" data-page="query" onclick="switchPage('query')">查询页</button>
+<button class="page-tab" data-page="groupSort" onclick="switchPage('groupSort')">分组排序表</button>
+<button class="page-tab" data-page="overview" onclick="switchPage('overview')">数据概览</button>
 </div>
 </div>
 <div style="text-align:center; margin-bottom:10px;">
@@ -510,8 +573,9 @@ z-index: 99;
 <div id="groupSortPage" class="page-container">
 <div class="page-header">
 <div class="page-tabs">
-<button class="page-tab" onclick="switchPage('query')">查询页</button>
-<button class="page-tab active" onclick="switchPage('groupSort')">分组排序表</button>
+<button class="page-tab" data-page="query" onclick="switchPage('query')">查询页</button>
+<button class="page-tab active" data-page="groupSort" onclick="switchPage('groupSort')">分组排序表</button>
+<button class="page-tab" data-page="overview" onclick="switchPage('overview')">数据概览</button>
 </div>
 </div>
 <div id="groupSortTopBar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:12px 0;border-bottom:1px solid #e0e0e0;">
@@ -523,6 +587,38 @@ z-index: 99;
 </div>
 <div id="groupSortCaptureArea" style="display:none;"></div>
 </div>
+<div id="overviewPage" class="page-container">
+<div class="page-header">
+<div class="page-tabs">
+<button class="page-tab" data-page="query" onclick="switchPage('query')">查询页</button>
+<button class="page-tab" data-page="groupSort" onclick="switchPage('groupSort')">分组排序表</button>
+<button class="page-tab active" data-page="overview" onclick="switchPage('overview')">数据概览</button>
+</div>
+</div>
+<div id="overviewContent" style="padding:20px;max-width:1200px;margin:0 auto;">
+<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:20px;height:calc(100vh - 150px);">
+<div class="overview-card" style="background:white;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;flex-direction:column;justify-content:center;align-items:center;">
+<div style="font-size:14px;color:#666;margin-bottom:12px;">已登记数据总数</div>
+<div id="totalCount" style="font-size:48px;font-weight:bold;color:#0078d7;"></div>
+</div>
+<div class="overview-card" style="background:white;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;flex-direction:column;">
+<div style="font-size:14px;color:#666;margin-bottom:8px;">即将过期账号</div>
+<div id="expiringCount" style="font-size:32px;font-weight:bold;color:#ff4444;margin-bottom:15px;"></div>
+<div id="expiringTable" style="flex:1;overflow-y:auto;"></div>
+</div>
+<div class="overview-card" style="background:white;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;flex-direction:column;">
+<div style="font-size:14px;color:#666;margin-bottom:8px;">书币余额占比</div>
+<div id="balanceChart" style="flex:1;position:relative;min-height:200px;"></div>
+<div id="balanceStats" style="font-size:13px;color:#333;margin-top:10px;"></div>
+</div>
+<div class="overview-card" style="background:white;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;flex-direction:column;">
+<div style="font-size:14px;color:#666;margin-bottom:8px;">更新时间分布</div>
+<div id="timeChart" style="flex:1;position:relative;min-height:200px;"></div>
+<div id="timeStats" style="font-size:13px;color:#333;margin-top:10px;"></div>
+</div>
+</div>
+</div>
+</div>
 <div id="imgPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;flex-direction:column;">
 <div style="background:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;align-items:center;max-width:90%;max-height:90%;overflow:auto;">
 <img id="generatedImg" src="" alt="查询结果" style="max-width:100%;height:auto;margin-bottom:12px;border:1px solid #ccc;">
@@ -533,6 +629,7 @@ z-index: 99;
 </div>
 </div>
 </div><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script>            function sha256(str) {const buffer = new TextEncoder().encode(str);return crypto.subtle.digest('SHA-256', buffer).then(hash => {const hexCodes = [];const view = new DataView(hash);for (let i = 0; i < view.byteLength; i += 4) {const value = view.getUint32(i);const stringValue = value.toString(16);const padding = '00000000';const paddedValue = (padding + stringValue).slice(-padding.length);hexCodes.push(paddedValue);}return hexCodes.join('');});}            const PASSWORD = "8ad1cdff8e94be94d940280fa25ab89403d6d15f8dc37badda286b11d840d834";
 const STORAGE_KEY = "wenxindushu_pwd_ok";
 const CACHE_KEY = "wenxindushu_table_cache";window.upperPool = window.upperPool || [];
@@ -630,6 +727,8 @@ container.innerHTML = cache;
 placeholderText.style.display = 'none';
 if (document.getElementById("groupSortPage").classList.contains("active")) {
 setTimeout(() => updateGroupSortTable(), 100);
+} else if (document.getElementById("overviewPage").classList.contains("active")) {
+setTimeout(() => updateOverviewPage(), 100);
 }
 } else {
 showPopup("无缓存表格可用，请手动粘贴表格内容");
@@ -639,14 +738,22 @@ const container = document.getElementById("inputData");
 container.innerHTML = "";
 placeholderText.style.display = 'block';
 document.getElementById("statusMsg").innerText = "";
-if (document.getElementById("groupSortPage").classList.contains("active")) {
 const cache = localStorage.getItem(CACHE_KEY);
+if (document.getElementById("groupSortPage").classList.contains("active")) {
 if (cache) {
 container.innerHTML = cache;
 placeholderText.style.display = 'none';
 setTimeout(() => updateGroupSortTable(), 100);
 } else {
 updateGroupSortTable();
+}
+} else if (document.getElementById("overviewPage").classList.contains("active")) {
+if (cache) {
+container.innerHTML = cache;
+placeholderText.style.display = 'none';
+setTimeout(() => updateOverviewPage(), 100);
+} else {
+updateOverviewPage();
 }
 }
 }
@@ -1269,22 +1376,16 @@ document.getElementById("saveImgBtn") ?.addEventListener("click", saveGeneratedI
 function switchPage(page) {
 const queryPage = document.getElementById("queryPage");
 const groupSortPage = document.getElementById("groupSortPage");
+const overviewPage = document.getElementById("overviewPage");
 const allTabs = document.querySelectorAll(".page-tab");
-if (page === 'query') {
-queryPage.classList.add("active");
-groupSortPage.classList.remove("active");
-allTabs.forEach((tab, idx) => {
-if (idx === 0) tab.classList.add("active");
-else tab.classList.remove("active");
-});
-} else {
-queryPage.classList.remove("active");
-groupSortPage.classList.add("active");
-allTabs.forEach((tab, idx) => {
-if (idx === 1) tab.classList.add("active");
-else tab.classList.remove("active");
-});
+queryPage.classList.toggle("active", page === 'query');
+groupSortPage.classList.toggle("active", page === 'groupSort');
+overviewPage.classList.toggle("active", page === 'overview');
+allTabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.page === page));
+if (page === 'groupSort') {
 updateGroupSortTable();
+} else if (page === 'overview') {
+updateOverviewPage();
 }
 }
 function getGroupIndex(num) {
@@ -1331,10 +1432,12 @@ cells[7] ? cells[7].innerText.trim() : ''
 ];
 const submit = (cells[submitColIdx] && cells[submitColIdx].innerText) ? cells[submitColIdx].innerText.trim() : '';
 accounts.forEach((text, k) => {
-if (!text) return;
-const valMatch = text.replace(/,/g, '').match(/\d+(\.\d+)?/);
-const val = valMatch ? parseFloat(valMatch[0]) : null;
-if (val !== null) {
+if (!text || text.trim() === '') return;
+const trimmedText = text.trim();
+const valMatch = trimmedText.replace(/,/g, '').match(/\d+(\.\d+)?/);
+if (!valMatch) return;
+const val = parseFloat(valMatch[0]);
+if (isNaN(val) || val < 0) return;
 const updateTs = parseTimeToTs(submit) || null;
 allItems.push({
 群昵称: name,
@@ -1349,14 +1452,14 @@ allItems.push({
 是否不接急单: /不接急单/.test(text),
 提交时间: submit,
 更新时间_ts: updateTs
-});
-}
-});
+    });
+  })
 });
 return allItems;
 }
+
 function updateGroupSortTable() {
-const allItems = parseAllAccounts();
+  const allItems = parseAllAccounts();
 const groups = [[], [], [], [], [], [], []];
 allItems.forEach(item => {
 let groupIdx;
@@ -1394,7 +1497,11 @@ const headers = ["x>=100", "80<=x<100", "50<=x<80", "30<=x<50", "x<30", "暂停�
 const table = document.getElementById("groupSortTable");
 let html = "<thead><tr>";
 for (let i = 0; i < 6; i++) {
-html += `<th colspan="2" class="group-header">${headers[i]}</th>`;
+const borderTop = '1px';
+const borderBottom = '1px';
+const borderLeft = i === 0 ? '1px' : '1px';
+const borderRight = '1px';
+html += `<th colspan="2" class="group-header" style="border-top:${borderTop} solid #ccc;border-bottom:${borderBottom} solid #ccc;border-left:${borderLeft} solid #ccc;border-right:${borderRight} solid #ccc;">${headers[i]}</th>`;
 }
 html += "</tr></thead><tbody>";
 const maxRows = Math.max(...groups.slice(1).map(g => g.length), 0);
@@ -1403,10 +1510,15 @@ html += "<tr>";
 for (let g = 1; g <= 6; g++) {
 if (r < groups[g].length) {
 const item = groups[g][r];
-html += `<td style="${getCellStyle(item, g)}">${item.群昵称}</td>`;
-html += `<td style="${getCellStyle(item, g)}">${item.书币}</td>`;
+const borderLeft = g === 1 ? '1px' : '1px';
+const borderRight = '1px';
+html += `<td style="border-left:${borderLeft} solid #ccc;">${item.群昵称}</td>`;
+html += `<td class="coin-cell" style="${getCellStyle(item, g)}border-right:${borderRight} solid #ccc;">${item.书币}</td>`;
 } else {
-html += "<td></td><td></td>";
+const borderLeft = g === 1 ? '1px' : '1px';
+const borderRight = '1px';
+html += `<td style="border-left:${borderLeft} solid #ccc;"></td>`;
+html += `<td style="border-right:${borderRight} solid #ccc;"></td>`;
 }
 }
 html += "</tr>";
@@ -1427,9 +1539,7 @@ btn.style.display = "none";
 function getCellStyle(item, groupId) {
 let style = "";
 const isReserve = item.是否暂停 && (item.书币.includes("预定") || item.书币.includes("预订"));
-if (item.是否过期) {
-style += "color:#ff0000;font-weight:bold;";
-} else if (isReserve) {
+if (isReserve) {
 style += "background-color:#e6e6e6;color:#646464;";
 } else if (item.是否暂停) {
 style += "background-color:#e6e6e6;color:#646464;";
@@ -1455,6 +1565,8 @@ style += "background-color:rgb(200, 255, 200);";
 style += "background-color:rgb(200, 220, 255);";
 }
 }
+// “过期”仅修改字体（红+粗），背景仍按数值分段颜色显示；“预定/预订”保持灰底
+if (item.是否过期) style += "color:#ff0000;font-weight:bold;";
 return style;
 }
 function renderGroupSortLegend() {
@@ -1503,7 +1615,8 @@ const dataUrl = canvas.toDataURL('image/png');
 document.body.removeChild(wrapper);
 const imgEl = document.getElementById("generatedImg");
 imgEl.src = dataUrl;
-imgEl.style.maxWidth = '1200px';
+imgEl.style.maxWidth = '500px';
+imgEl.style.maxHeight = '80vh';
 imgEl.style.width = 'auto';
 imgEl.style.height = 'auto';
 imgEl.style.borderRadius = '6px';
@@ -1587,10 +1700,183 @@ if (inputTimer) clearTimeout(inputTimer);
 inputTimer = setTimeout(() => {
 if (document.getElementById("groupSortPage").classList.contains("active")) {
 updateGroupSortTable();
+} else if (document.getElementById("overviewPage").classList.contains("active")) {
+updateOverviewPage();
 }
 }, 300);
 });
+function updateOverviewPage() {
+const allItems = parseAllAccounts();
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const totalCountEl = document.getElementById("totalCount");
+const container = document.getElementById("inputData");
+const table = container.querySelector('table');
+let totalAccounts = 0;
+if (table) {
+const cols = [2, 3, 4, 5, 6, 7];
+const rows = Array.from(table.rows).slice(1);
+rows.forEach(row => {
+const cells = row.cells;
+if (!cells || cells.length === 0) return;
+cols.forEach(colIdx => {
+if (cells[colIdx] && cells[colIdx].innerText && cells[colIdx].innerText.trim() !== '') {
+totalAccounts++;
+}
+});
+});
+}
+totalCountEl.innerHTML = totalAccounts || allItems.length;
+const expiringItems = allItems.filter(item => item.是否过期).sort((a, b) => {
+const valA = a.数值 || 0;
+const valB = b.数值 || 0;
+return valA - valB;
+});
+const expiringCountEl = document.getElementById("expiringCount");
+const expiringTableEl = document.getElementById("expiringTable");
+expiringCountEl.innerHTML = expiringItems.length;
+if (expiringItems.length > 0) {
+let html = '<table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#f5f5f5;"><th style="border:1px solid #ddd;padding:6px;text-align:center;">群昵称</th><th style="border:1px solid #ddd;padding:6px;text-align:center;">账号</th><th style="border:1px solid #ddd;padding:6px;text-align:center;">余额</th></tr></thead><tbody>';
+expiringItems.forEach(item => {
+html += `<tr><td style="border:1px solid #ddd;padding:6px;text-align:center;">${item.群昵称}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;">${item.账号}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;color:#ff0000;font-weight:bold;">${item.书币}</td></tr>`;
+});
+html += '</tbody></table>';
+expiringTableEl.innerHTML = html;
+} else {
+expiringTableEl.innerHTML = '<p style="color:#999;font-size:13px;margin-top:10px;text-align:center;">暂无即将过期账号</p>';
+}
+const filteredItems = allItems.filter(item => !item.是否暂停);
+const values = filteredItems.map(item => item.数值).filter(v => typeof v === 'number' && !isNaN(v));
+const low = values.filter(v => v <= 10).length;
+const high = values.filter(v => v >= 120).length;
+const mid = values.length - low - high;
+const balanceChartEl = document.getElementById("balanceChart");
+balanceChartEl.innerHTML = '';
+const balanceCanvas = document.createElement('canvas');
+balanceCanvas.id = 'balanceChartCanvas';
+balanceChartEl.appendChild(balanceCanvas);
+setTimeout(() => {
+try {
+const ctx1 = document.getElementById("balanceChartCanvas");
+if (!ctx1) {
+console.error('balanceChartCanvas not found');
+return;
+}
+if (window.balanceChart) window.balanceChart.destroy();
+window.balanceChart = new Chart(ctx1, {
+type: 'pie',
+data: {
+labels: ['低余额（≤10）', '高余额（≥120）', '其他'],
+datasets: [{
+data: [low, high, mid],
+backgroundColor: ['rgb(200,220,255)', 'rgb(255,200,150)', 'rgb(200,255,200)']
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+display: true,
+position: 'bottom',
+align: 'center',
+labels: {
+font: { size: 11 },
+padding: 8,
+boxWidth: 12,
+boxHeight: 12
+}
+}
+}
+}
+});
+} catch (e) {
+console.error('Error creating balance chart:', e);
+}
+}, 200);
+const balanceStatsEl = document.getElementById("balanceStats");
+balanceStatsEl.innerHTML = `<div style="margin-top:10px;"><span style="color:#666;">低余额：</span><strong>${low}</strong> <span style="margin-left:15px;color:#666;">高余额：</span><strong>${high}</strong></div>`;
+const timeLabels = ["今日内", "1天前", "2天及更早前"];
+const timeCounts = [0, 0, 0];
+filteredItems.forEach(item => {
+if (!item.更新时间_ts && !item.提交时间) {
+timeCounts[2]++;
+return;
+}
+let itemDate;
+if (item.更新时间_ts) {
+itemDate = new Date(item.更新时间_ts);
+} else if (item.提交时间) {
+itemDate = parseTimeToTs(item.提交时间);
+if (itemDate) itemDate = new Date(itemDate);
+else {
+timeCounts[2]++;
+return;
+}
+} else {
+timeCounts[2]++;
+return;
+}
+itemDate.setHours(0, 0, 0, 0);
+const diffDays = Math.floor((today - itemDate) / (1000 * 60 * 60 * 24));
+if (diffDays === 0) timeCounts[0]++;
+else if (diffDays === 1) timeCounts[1]++;
+else timeCounts[2]++;
+});
+const timeChartEl = document.getElementById("timeChart");
+timeChartEl.innerHTML = '';
+const timeCanvas = document.createElement('canvas');
+timeCanvas.id = 'timeChartCanvas';
+timeChartEl.appendChild(timeCanvas);
+setTimeout(() => {
+try {
+const ctx2 = document.getElementById("timeChartCanvas");
+if (!ctx2) {
+console.error('timeChartCanvas not found');
+return;
+}
+if (window.timeChart) window.timeChart.destroy();
+window.timeChart = new Chart(ctx2, {
+type: 'pie',
+data: {
+labels: timeLabels,
+datasets: [{
+data: timeCounts,
+backgroundColor: ['rgb(150,255,100)', 'rgb(255,255,100)', 'rgb(255,50,50)']
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+plugins: {
+legend: {
+display: true,
+position: 'bottom',
+align: 'center',
+labels: {
+font: { size: 11 },
+padding: 8,
+boxWidth: 12,
+boxHeight: 12,
+usePointStyle: false
+}
+}
+}
+}
+});
+} catch (e) {
+console.error('Error creating time chart:', e);
+}
+}, 250);
+const total = timeCounts.reduce((a, b) => a + b, 0);
+let timeStatsHtml = '';
+timeLabels.forEach((label, idx) => {
+const count = timeCounts[idx];
+const pct = total > 0 ? (count / total * 100).toFixed(1) : 0;
+timeStatsHtml += `<div style="margin-top:8px;"><span style="color:#666;">${label}：</span><strong>${count}</strong> <span style="color:#999;">(${pct}%)</span></div>`;
+});
+document.getElementById("timeStats").innerHTML = timeStatsHtml;
+}
 </script>
 </body></html>
-
 
