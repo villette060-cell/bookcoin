@@ -714,7 +714,7 @@ const GROUP_ORDER = ['过期组', '挑战组', '正常组'];
 function matchesQueryFilter(item, num) {
 if (window.wangwenMode && !item.是否网文) return false;
 if (item.是否挑战 && !item.是否过期) {
-return item.数值 >= num - 2 && item.数值 <= num + 5;
+return item.数值 >= num - 5 && item.数值 <= num + 2;
 }
 return true;
 }
