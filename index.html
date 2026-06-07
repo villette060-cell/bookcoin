@@ -184,6 +184,37 @@ display: flex;
 align-items: center;
 gap: 6px;
 }
+#feeOptions {
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+font-size: 14px;
+justify-content: center;
+gap: 25px;
+font-weight: normal;
+margin: 8px 0 12px;
+}
+.page-subtitle {
+text-align: center;
+font-size: 14px;
+color: #888;
+margin: -8px 0 16px;
+padding: 0 12px;
+}
+#imgPopup .img-popup-inner {
+max-width: 90%;
+max-height: 90%;
+overflow: auto;
+}
+#imgPopup #generatedImg {
+display: block;
+max-width: 100%;
+width: 100%;
+height: auto;
+max-height: 70vh;
+object-fit: contain;
+box-sizing: border-box;
+}
 #actionButtons {
 display: flex;
 justify-content: center;
@@ -500,6 +531,15 @@ height: auto !important;
 #overviewContent .overview-card {
 min-height: 250px;
 }
+#overviewTotalCard.overview-card {
+min-height: 167px !important;
+max-height: 167px;
+padding: 12px 15px !important;
+justify-content: center;
+}
+#overviewTotalCard #totalCount {
+font-size: 36px !important;
+}
 }
 #main {
 padding: 0;
@@ -580,7 +620,7 @@ z-index: 99;
 <button onclick="search()">查询</button>
 <button id="undoBtn" onclick="undoDelete()"> 撤销删除</button>
 </div>
-<div id="captureArea"><div id="queryResultsWrap" style="display:none; flex-direction:column; align-items:center; margin-bottom:12px; font-size:16px; line-height:1.4; gap:4px; width:100%;"></div><div id="feeOptions" style="display:none; flex-direction:row; font-size:14px; justify-content:center; gap:25px; font-weight:normal;">
+<div id="feeOptions">
 <div class="fee-select-wrap">
 <span>交易平台服务费</span>
 <select id="platformFeeRate">
@@ -597,7 +637,7 @@ z-index: 99;
 </select>
 </div>
 </div>
-</div>
+<div id="captureArea"><div id="queryResultsWrap" style="display:none; flex-direction:column; align-items:center; margin-bottom:12px; font-size:16px; line-height:1.4; gap:4px; width:100%;"></div></div>
 <button id="generateImgBtn" style="display:none;">生成查询结果图</button>
 </div>
 <div id="groupSortPage" class="page-container">
@@ -608,6 +648,7 @@ z-index: 99;
 <button class="page-tab" data-page="overview" onclick="switchPage('overview')">数据概览</button>
 </div>
 </div>
+<p class="page-subtitle">仅包含7日内数据</p>
 <div id="groupSortTopBar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:12px 0;border-bottom:1px solid #e0e0e0;">
 <div id="groupSortLegend"></div>
 <button id="groupSortGenerateBtn" style="display:none;padding:8px 20px;font-size:14px;">生成图片</button>
@@ -625,9 +666,10 @@ z-index: 99;
 <button class="page-tab active" data-page="overview" onclick="switchPage('overview')">数据概览</button>
 </div>
 </div>
+<p class="page-subtitle">仅包含7日内数据</p>
 <div id="overviewContent" style="padding:20px;max-width:1200px;margin:0 auto;">
 <div id="overviewGrid" style="display:grid;grid-template-columns:1fr 2fr;gap:20px;height:calc(100vh - 150px);">
-<div class="overview-card" style="background:white;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;flex-direction:column;justify-content:center;align-items:center;">
+<div id="overviewTotalCard" class="overview-card" style="background:white;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;flex-direction:column;justify-content:center;align-items:center;">
 <div style="font-size:14px;color:#666;margin-bottom:12px;">已登记账号总数</div>
 <div id="totalCount" style="font-size:48px;font-weight:bold;color:#0078d7;"></div>
 </div>
@@ -640,9 +682,9 @@ z-index: 99;
 </div>
 </div>
 </div>
-<div id="imgPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;flex-direction:column;">
-<div style="background:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;align-items:center;max-width:90%;max-height:90%;overflow:auto;">
-<img id="generatedImg" src="" alt="查询结果" style="max-width:100%;height:auto;margin-bottom:12px;border:1px solid #ccc;">
+<div id="imgPopup" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;flex-direction:column;padding:12px;box-sizing:border-box;">
+<div class="img-popup-inner" style="background:#fff;padding:12px;border-radius:8px;display:flex;flex-direction:column;align-items:center;width:100%;max-width:min(500px, 100%);box-sizing:border-box;">
+<img id="generatedImg" src="" alt="查询结果" style="margin-bottom:12px;border:1px solid #ccc;border-radius:6px;">
 <div id="imgTip" style="margin-bottom:12px;font-size:14px;color:#555;text-align:center;">复制图片 / 保存图片</div>
 <div style="display:flex;gap:12px;">
 <button id="copyImgBtn" class="imgBtn">复制图片</button>
@@ -652,7 +694,10 @@ z-index: 99;
 </div><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>            function sha256(str) {const buffer = new TextEncoder().encode(str);return crypto.subtle.digest('SHA-256', buffer).then(hash => {const hexCodes = [];const view = new DataView(hash);for (let i = 0; i < view.byteLength; i += 4) {const value = view.getUint32(i);const stringValue = value.toString(16);const padding = '00000000';const paddedValue = (padding + stringValue).slice(-padding.length);hexCodes.push(paddedValue);}return hexCodes.join('');});}            const PASSWORD = "8ad1cdff8e94be94d940280fa25ab89403d6d15f8dc37badda286b11d840d834";
 const STORAGE_KEY = "wenxindushu_pwd_ok";
-const CACHE_KEY = "wenxindushu_table_cache";window.upperPool = window.upperPool || [];
+const CACHE_KEY = "wenxindushu_table_cache";
+const PLATFORM_FEE_KEY = "wenxindushu_platform_fee";
+const PERSONAL_FEE_KEY = "wenxindushu_personal_fee";
+window.upperPool = window.upperPool || [];
 window.lowerPool = window.lowerPool || [];
 window.expiredPool = window.expiredPool || [];
 window.latestResult = window.latestResult || [];
@@ -711,10 +756,30 @@ showMain();
 } else {
     document.getElementById("pwdMsg").innerText = "密码错误";
 }
-}function showMain() {
+}function saveFeePreferences() {
+const platformEl = document.getElementById("platformFeeRate");
+const personalEl = document.getElementById("personalFeeRate");
+if (platformEl) localStorage.setItem(PLATFORM_FEE_KEY, platformEl.value);
+if (personalEl) localStorage.setItem(PERSONAL_FEE_KEY, personalEl.value);
+}
+function restoreFeePreferences() {
+const platformEl = document.getElementById("platformFeeRate");
+const personalEl = document.getElementById("personalFeeRate");
+const savedPlatform = localStorage.getItem(PLATFORM_FEE_KEY);
+const savedPersonal = localStorage.getItem(PERSONAL_FEE_KEY);
+if (platformEl && savedPlatform !== null && Array.from(platformEl.options).some(o => o.value === savedPlatform)) {
+platformEl.value = savedPlatform;
+}
+if (personalEl && savedPersonal !== null && Array.from(personalEl.options).some(o => o.value === savedPersonal)) {
+personalEl.value = savedPersonal;
+}
+}
+function showMain() {
 document.getElementById("passwordArea").style.display = "none";
 document.getElementById("main").style.display = "block";
 document.getElementById("statusMsg").innerText = "";
+restoreFeePreferences();
+bindFeeCalcListeners();
 const cached = localStorage.getItem(CACHE_KEY);
 if (cached) {
 const container = document.getElementById("inputData");
@@ -1324,14 +1389,12 @@ return html;
 }
 function renderAllQueryResults() {
 const wrap = document.getElementById("queryResultsWrap");
-const feeOptions = document.getElementById("feeOptions");
 const generateBtn = document.getElementById("generateImgBtn");
 if (!wrap) return;
 const blocks = window.queryBlocks || [];
 if (!blocks.length) {
 wrap.style.display = "none";
 wrap.innerHTML = "";
-if (feeOptions) feeOptions.style.display = "none";
 if (generateBtn) generateBtn.style.display = "none";
 return;
 }
@@ -1351,17 +1414,39 @@ html += `<div class="query-block-calc">
 });
 wrap.innerHTML = html;
 wrap.style.display = "flex";
-if (feeOptions) feeOptions.style.display = "flex";
 if (generateBtn) generateBtn.style.display = "inline-block";
-bindFeeCalcListeners();
+}
+function onFeeSelectionChange() {
+saveFeePreferences();
+if (window.queryBlocks && window.queryBlocks.length) renderAllQueryResults();
 }
 function bindFeeCalcListeners() {
 if (window.feeListenersBound) return;
 window.feeListenersBound = true;
 const platformEl = document.getElementById("platformFeeRate");
-platformEl && platformEl.addEventListener('change', () => renderAllQueryResults());
+platformEl && platformEl.addEventListener('change', onFeeSelectionChange);
 const personalEl = document.getElementById("personalFeeRate");
-personalEl && personalEl.addEventListener('change', () => renderAllQueryResults());
+personalEl && personalEl.addEventListener('change', onFeeSelectionChange);
+}
+function showImagePopup(dataUrl, isGroupSort) {
+window.currentGroupSortImg = isGroupSort ? dataUrl : null;
+const imgEl = document.getElementById("generatedImg");
+imgEl.src = dataUrl;
+const tipEl = document.getElementById("imgTip");
+if (/Android|iPhone/i.test(navigator.userAgent)) {
+tipEl.innerText = "复制失败时可长按图片复制或保存";
+} else {
+tipEl.innerText = "复制失败时可右键单击图片复制或保存";
+}
+const popup = document.getElementById("imgPopup");
+popup.style.display = "flex";
+popup.onclick = function(e) {
+if (e.target === popup) popup.style.display = "none";
+};
+const popupContent = popup.querySelector('.img-popup-inner');
+if (popupContent) {
+popupContent.onclick = function(e) { e.stopPropagation(); };
+}
 }
 const EXIST_ID = "dynamic-table-style";
 let styleEl = document.getElementById(EXIST_ID);
@@ -1423,67 +1508,33 @@ if (!captureArea) {
 showPopup("无查询结果可截图");
 return;
 }
+const captureWidth = Math.min(500, Math.max(280, window.innerWidth - 32));
 const wrapper = document.createElement('div');
-wrapper.style.width = '500px';
+wrapper.style.width = captureWidth + 'px';
 wrapper.style.padding = '12px';
 wrapper.style.background = '#fff';
 wrapper.style.position = 'absolute';
 wrapper.style.left = '-9999px';
 wrapper.style.boxSizing = 'border-box';
 wrapper.style.fontFamily = 'Arial, sans-serif';
-wrapper.style.fontSize = '14px';const clone = captureArea.cloneNode(true);
+wrapper.style.fontSize = '14px';
+const clone = captureArea.cloneNode(true);
 clone.style.width = '100%';
-const feeOpts = clone.querySelector('#feeOptions');
-if (feeOpts) {
-feeOpts.style.display = 'flex';
-feeOpts.innerHTML = getFeeSnapshotHtml();
-}
+const feeDiv = document.createElement('div');
+feeDiv.style.marginTop = '12px';
+feeDiv.innerHTML = getFeeSnapshotHtml();
+clone.appendChild(feeDiv);
 wrapper.appendChild(clone);
 document.body.appendChild(wrapper);
+const scale = window.innerWidth <= 768 ? Math.min(2, window.devicePixelRatio || 1.5) : 2;
 const canvas = await html2canvas(wrapper, {
-backgroundColor: null,
-scale: 2
+backgroundColor: '#fff',
+scale: scale,
+width: captureWidth
 });
 const dataUrl = canvas.toDataURL('image/png');
 document.body.removeChild(wrapper);
-const imgEl = document.getElementById("generatedImg");
-imgEl.src = dataUrl;
-imgEl.style.maxWidth = '500px';
-imgEl.style.width = 'auto';
-imgEl.style.height = 'auto';
-imgEl.style.borderRadius = '6px';
-imgEl.style.boxShadow = '0 0 8px rgba(0,0,0,0.3)';
-const tipEl = document.getElementById("imgTip");
-if (/Android|iPhone/i.test(navigator.userAgent)) {
-tipEl.innerText = "复制失败时可长按图片复制或保存";
-} else {
-tipEl.innerText = "复制失败时可右键单击图片复制或保存";
-}
-const popup = document.getElementById("imgPopup");
-popup.style.display = "flex";
-popup.style.position = "fixed";
-popup.style.top = "0";
-popup.style.left = "0";
-popup.style.width = "100%";
-popup.style.height = "100%";
-popup.style.background = "rgba(0,0,0,0.5)";
-popup.style.justifyContent = "center";
-popup.style.alignItems = "center";
-popup.style.padding = "20px";
-popup.style.boxSizing = "border-box";
-popup.style.overflow = "auto";
-popup.style.zIndex = "9999";
-popup.onclick = function(e) {
-if (e.target === popup || e.target.classList.contains('popup-background')) {
-popup.style.display = "none";
-}
-};
-const popupContent = popup.querySelector('div');
-if (popupContent) {
-popupContent.onclick = function(e) {
-e.stopPropagation();
-};
-}
+showImagePopup(dataUrl, false);
 }
 async function copyGeneratedImg() {
 const img = document.getElementById("generatedImg");
@@ -1709,7 +1760,7 @@ function renderGroupSortLegend() {
 const legend = document.getElementById("groupSortLegend");
 legend.innerHTML = `
 <div class="legend-item"><span style="color:#ff0000;font-weight:bold;">即将过期</span></div>
-<div class="legend-item"><span style="color:#008000;font-weight:bold;">挑战</span></div>
+<div class="legend-item"><span style="color:#008000;font-weight:bold;">挑战待处理</span></div>
 <div class="legend-item"><span style="color:#336699;">网文</span></div>
 `;
 }
@@ -1748,34 +1799,7 @@ scale: 2
 });
 const dataUrl = canvas.toDataURL('image/png');
 document.body.removeChild(wrapper);
-const imgEl = document.getElementById("generatedImg");
-imgEl.src = dataUrl;
-imgEl.style.maxWidth = '500px';
-imgEl.style.maxHeight = '80vh';
-imgEl.style.width = 'auto';
-imgEl.style.height = 'auto';
-imgEl.style.borderRadius = '6px';
-imgEl.style.boxShadow = '0 0 8px rgba(0,0,0,0.3)';
-const tipEl = document.getElementById("imgTip");
-if (/Android|iPhone/i.test(navigator.userAgent)) {
-tipEl.innerText = "复制失败时可长按图片复制或保存";
-} else {
-tipEl.innerText = "复制失败时可右键单击图片复制或保存";
-}
-const popup = document.getElementById("imgPopup");
-popup.style.display = "flex";
-window.currentGroupSortImg = dataUrl;
-popup.onclick = function(e) {
-if (e.target === popup || e.target.classList.contains('popup-background')) {
-popup.style.display = "none";
-}
-};
-const popupContent = popup.querySelector('div');
-if (popupContent) {
-popupContent.onclick = function(e) {
-e.stopPropagation();
-};
-}
+showImagePopup(dataUrl, true);
 }
 async function copyGroupSortImg() {
 const table = document.getElementById("groupSortTable");
