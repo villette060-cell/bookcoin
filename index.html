@@ -2,7 +2,7 @@
 <html lang="zh"><head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>书币查询工具v4.0</title>
+<title>书币查询工具v4.1</title>
 <style>
 #passwordArea {
 position: fixed;
@@ -1868,20 +1868,25 @@ function updateOverviewPage() {
 const allItems = parseAllAccounts();
 const totalCountEl = document.getElementById("totalCount");
 totalCountEl.innerHTML = allItems.length;
-const expiringItems = allItems.filter(item => item.是否过期).sort((a, b) => {
+const sortByUpdateTime = (a, b) => {
 const dayA = a.更新时间_ts ? new Date(a.更新时间_ts).setHours(0, 0, 0, 0) : Number.MAX_SAFE_INTEGER;
 const dayB = b.更新时间_ts ? new Date(b.更新时间_ts).setHours(0, 0, 0, 0) : Number.MAX_SAFE_INTEGER;
 if (dayA !== dayB) return dayA - dayB;
 return (a.数值 || 0) - (b.数值 || 0);
-});
+};
+const challengeItems = allItems.filter(item => classify(item) === '挑战组').sort(sortByUpdateTime);
+const expiringItems = allItems.filter(item => item.是否过期).sort(sortByUpdateTime);
+const displayItems = [...challengeItems, ...expiringItems];
 const expiringCountEl = document.getElementById("expiringCount");
 const expiringTableEl = document.getElementById("expiringTable");
 expiringCountEl.innerHTML = expiringItems.length;
-if (expiringItems.length > 0) {
+if (displayItems.length > 0) {
 let html = '<table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#f5f5f5;"><th style="border:1px solid #ddd;padding:6px;text-align:center;">群昵称</th><th style="border:1px solid #ddd;padding:6px;text-align:center;">账号</th><th style="border:1px solid #ddd;padding:6px;text-align:center;">余额</th><th style="border:1px solid #ddd;padding:6px;text-align:center;">更新时间</th></tr></thead><tbody>';
-expiringItems.forEach(item => {
+displayItems.forEach(item => {
 const updateLabel = item.更新时间 || (item.提交时间 ? formatUpdateTime(item.提交时间) : '—');
-html += `<tr><td style="border:1px solid #ddd;padding:6px;text-align:center;">${item.群昵称}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;">${item.账号}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;color:#ff0000;font-weight:bold;">${item.书币}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;">${updateLabel}</td></tr>`;
+const isChallenge = classify(item) === '挑战组';
+const balanceStyle = isChallenge ? 'color:#008000;font-weight:bold;' : 'color:#ff0000;font-weight:bold;';
+html += `<tr><td style="border:1px solid #ddd;padding:6px;text-align:center;">${item.群昵称}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;">${item.账号}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;${balanceStyle}">${item.书币}</td><td style="border:1px solid #ddd;padding:6px;text-align:center;">${updateLabel}</td></tr>`;
 });
 html += '</tbody></table>';
 expiringTableEl.innerHTML = html;
