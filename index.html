@@ -2,7 +2,7 @@
 <html lang="zh"><head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>书币查询工具v4.1</title>
+<title>书币查询工具v4.0</title>
 <style>
 #passwordArea {
 position: fixed;
@@ -648,7 +648,7 @@ z-index: 99;
 <button class="page-tab" data-page="overview" onclick="switchPage('overview')">数据概览</button>
 </div>
 </div>
-<p class="page-subtitle">仅包含7日内数据</p>
+<p class="page-subtitle">仅包含7日内数据（挑战组包含30日内）</p>
 <div id="groupSortTopBar" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:12px 0;border-bottom:1px solid #e0e0e0;">
 <div id="groupSortLegend"></div>
 <button id="groupSortGenerateBtn" style="display:none;padding:8px 20px;font-size:14px;">生成图片</button>
@@ -666,7 +666,7 @@ z-index: 99;
 <button class="page-tab active" data-page="overview" onclick="switchPage('overview')">数据概览</button>
 </div>
 </div>
-<p class="page-subtitle">仅包含7日内数据</p>
+<p class="page-subtitle">仅包含7日内数据（挑战组包含30日内）</p>
 <div id="overviewContent" style="padding:20px;max-width:1200px;margin:0 auto;">
 <div id="overviewGrid" style="display:grid;grid-template-columns:1fr 2fr;gap:20px;height:calc(100vh - 150px);">
 <div id="overviewTotalCard" class="overview-card" style="background:white;border-radius:8px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);display:flex;flex-direction:column;justify-content:center;align-items:center;">
@@ -839,10 +839,10 @@ if (isNaN(itemDate)) return null;
 itemDate.setHours(0, 0, 0, 0);
 return Math.floor((today - itemDate) / (1000 * 60 * 60 * 24));
 }
-function isWithin7Days(submitStr, updateTs) {
+function isWithinDays(submitStr, updateTs, days) {
 const diff = getDayDiffFromToday(updateTs || submitStr);
 if (diff === null) return false;
-return diff >= 0 && diff <= 7;
+return diff >= 0 && diff <= days;
 }function loadCacheTable() {
 const container = document.getElementById("inputData");
 const cache = localStorage.getItem(CACHE_KEY);
@@ -961,7 +961,8 @@ if (k >= 4) console.log(`账号${k+1}无法解析数值，文本:`, text);
 }
 if (val !== null) {
 const updateTs = parseTimeToTs(updateStr) || parseTimeToTs(submit) || null;
-if (!isWithin7Days(submit, updateTs)) return;
+const isChallengeGroup = /挑战/.test(text) && !/过期|到期/.test(text) && !/暂停接单|预定|预订/.test(text);
+if (!isWithinDays(submit, updateTs, isChallengeGroup ? 30 : 7)) return;
 list.push({
 群昵称: name,
 账号: `账号${k+1}`,
@@ -1627,7 +1628,8 @@ if (!valMatch) return;
 const val = parseFloat(valMatch[0]);
 if (isNaN(val) || val < 0) return;
 const updateTs = parseTimeToTs(submit) || null;
-if (!isWithin7Days(submit, updateTs)) return;
+const isChallengeGroup = /挑战/.test(text) && !/过期|到期/.test(text) && !/暂停接单|预定|预订/.test(text);
+if (!isWithinDays(submit, updateTs, isChallengeGroup ? 30 : 7)) return;
 allItems.push({
 群昵称: name,
 账号: `账号${k+1}`,
@@ -1875,7 +1877,7 @@ if (dayA !== dayB) return dayA - dayB;
 return (a.数值 || 0) - (b.数值 || 0);
 };
 const challengeItems = allItems.filter(item => classify(item) === '挑战组').sort(sortByUpdateTime);
-const expiringItems = allItems.filter(item => item.是否过期).sort(sortByUpdateTime);
+const expiringItems = allItems.filter(item => item.是否过期 && (item.数值 || 0) >= 70).sort(sortByUpdateTime);
 const displayItems = [...challengeItems, ...expiringItems];
 const expiringCountEl = document.getElementById("expiringCount");
 const expiringTableEl = document.getElementById("expiringTable");
