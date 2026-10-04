@@ -710,7 +710,6 @@ window.initialLatestLength = window.initialLatestLength || null;
 window.normalGroup = window.normalGroup || [];
 window.challengeGroup = window.challengeGroup || [];
 window.wangwenMode = window.wangwenMode || false;
-const GROUP_ORDER = ['过期组', '挑战组', '正常组'];
 function matchesQueryFilter(item, num) {
 if (window.wangwenMode && !item.是否网文) return false;
 if (item.是否挑战 && !item.是否过期) {
@@ -719,7 +718,12 @@ return item.数值 >= num - 5 && item.数值 <= num + 2;
 return true;
 }
 function compareByGroupAndValue(a, b) {
-const ga = GROUP_ORDER.indexOf(classify(a)), gb = GROUP_ORDER.indexOf(classify(b));
+const rank = g => {
+if (g === '弃置组') return -1;
+if (g === '挑战组' || g === '过期组') return 0;
+return 1;
+};
+const ga = rank(classify(a)), gb = rank(classify(b));
 if (ga !== gb) return ga - gb;
 if (a.数值 !== b.数值) return a.数值 - b.数值;
 return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
@@ -991,7 +995,7 @@ parseAccounts(row).forEach(item => {
 const g = classify(item);
 switch (g) {
 case '过期组':
-expiredGroup.push(item);
+if (item.数值 >= 70) expiredGroup.push(item);
 break;
 case '挑战组':
 challengeGroup.push(item);
@@ -1011,13 +1015,19 @@ function isPureChallenge(item) {
 return item.是否挑战 && !item.是否过期;
 }
 function buildUpperForDisplay(fullUpperPool, num) {
-const challengeUpper = fullUpperPool.filter(r => isPureChallenge(r) && r.数值 >= num - 5 && r.数值 < num);
-const otherUpper = fullUpperPool.filter(r => !(isPureChallenge(r) && r.数值 >= num - 5 && r.数值 < num));
-const maxOther = Math.max(0, 3 - challengeUpper.length);
-const otherDisplay = otherUpper.slice(Math.max(0, otherUpper.length - maxOther));
+const specialUpper = fullUpperPool.filter(r => classify(r) === '挑战组' || classify(r) === '过期组');
+const normalUpper = fullUpperPool.filter(r => classify(r) === '正常组');
+const descByValue = (a, b) => {
+if (b.数值 !== a.数值) return b.数值 - a.数值;
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+};
+specialUpper.sort(descByValue);
+normalUpper.sort(descByValue);
+const specialDisplay = specialUpper.slice(0, 3);
+const normalDisplay = normalUpper.slice(0, Math.max(0, 3 - specialDisplay.length));
 const seen = new Set();
 const result = [];
-[...otherDisplay, ...challengeUpper].forEach(r => {
+[...specialDisplay, ...normalDisplay].forEach(r => {
 const k = r._key || `${r.群昵称}||${r.账号}||${r.书币}||${r.原始时间}`;
 if (!r._key) r._key = k;
 if (!seen.has(k)) {
@@ -1068,17 +1078,24 @@ const step = 10;
 const maxSegments = 200;
 const lowerPoolFull = [];
 const lowerSeen = new Set();
-for (const r of expiredLower) {
+const lowerChallenge = lowerCandidatesAll.filter(r => classify(r) === '挑战组');
+const lowerNormal = lowerCandidatesAll.filter(r => classify(r) !== '挑战组');
+const specialPool = [...lowerChallenge, ...expiredLower];
+specialPool.sort((a, b) => {
+if (a.数值 !== b.数值) return a.数值 - b.数值;
+return (b.更新时间_ts || 0) - (a.更新时间_ts || 0);
+});
+for (const r of specialPool) {
 if (!lowerSeen.has(r._key)) {
 lowerPoolFull.push(r);
 lowerSeen.add(r._key);
 }
 }
-const globalMax = lowerCandidatesAll.length > 0 ? Math.max(...lowerCandidatesAll.map(r => r.数值)) : num;
+const globalMax = lowerNormal.length > 0 ? Math.max(...lowerNormal.map(r => r.数值)) : num;
 for (let seg = 0; seg < maxSegments; seg++) {
 const start = num + seg * step;
 const end = start + step;
-const segItems = lowerCandidatesAll.filter(r => r.数值 >= start && r.数值 < end && !lowerSeen.has(r._key));
+const segItems = lowerNormal.filter(r => r.数值 >= start && r.数值 < end && !lowerSeen.has(r._key));
 if (segItems.length > 0) {
 segItems.sort(compareByGroupAndValue);
 for (const it of segItems) {
@@ -1088,8 +1105,8 @@ lowerSeen.add(it._key);
 }
 if (end >= globalMax) break;
 }
-if (lowerPoolFull.length < 4 && lowerCandidatesAll.length > lowerPoolFull.length) {
-const remaining = lowerCandidatesAll.filter(r => !lowerSeen.has(r._key));
+if (lowerPoolFull.length < 4 && lowerNormal.length > lowerPoolFull.length) {
+const remaining = lowerNormal.filter(r => !lowerSeen.has(r._key));
 remaining.sort(compareByGroupAndValue);
 for (const it of remaining) {
 if (!lowerSeen.has(it._key)) {
@@ -1652,6 +1669,7 @@ function updateGroupSortTable() {
   const allItems = parseAllAccounts();
 const groups = [[], [], [], [], [], [], []];
 allItems.forEach(item => {
+if (classify(item) === '过期组' && (item.数值 || 0) < 70) return;
 let groupIdx;
 const isReserve = item.是否暂停 && (item.书币.includes("预定") || item.书币.includes("预订"));
 if (item.是否暂停 && !isReserve) {
